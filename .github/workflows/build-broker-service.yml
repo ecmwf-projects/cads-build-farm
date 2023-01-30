@@ -52,6 +52,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ecmwf-projects/cads-deployment
+          ref: no-more-pvc
           token: ${{ secrets.CADS_PAT }}
           path: .
 
