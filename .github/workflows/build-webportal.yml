@@ -9,7 +9,7 @@ on:
         default: 'latest'
   workflow_run:
     workflows: 
-      - ecmwf-projects/cads-deployment/build-images.yml
+      - ecmwf-projects/cads-build-farm/build-images.yml
     types: [requested]
 
 # DONT FORGET TO SET THE FOLLOWING GITHUB SECRETS (not necessary if the worflow is already working)
