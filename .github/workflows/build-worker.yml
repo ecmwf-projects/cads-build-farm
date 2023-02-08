@@ -85,6 +85,7 @@ jobs:
 
         with:
           context: docker
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.HARBOR_IP }}/cads-dev-env/worker:${{ github.event.inputs.image_tag }}
           file: docker/worker/Dockerfile

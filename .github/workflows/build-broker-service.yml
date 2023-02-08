@@ -82,13 +82,6 @@ jobs:
           token: ${{ secrets.CADS_PAT }}
           path: ./docker/cads-worker
 
-      - name: Checkout ogc-api-processes-fastapi repo
-        uses: actions/checkout@v3
-        with:
-          repository: ecmwf-projects/ogc-api-processes-fastapi
-          token: ${{ secrets.CADS_PAT }}
-          path: ./docker/ogc-api-processes-fastapi
-
       - name: Build and push
         uses: docker/build-push-action@v3
         with:

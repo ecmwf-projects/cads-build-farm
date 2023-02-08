@@ -23,7 +23,7 @@ jobs:
         run: |
           ls /etc/docker
           sudo mkdir -p /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}" 
-          echo "${{ secrets.HARBOR_CERT }}" | sudo tee /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt >/dev/null 
+          echo "${{ secrets.HARBOR_CERT }}" | sudo tee /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt >/dev/null
       - name: Copy ca cert
         run: |
           sudo cp /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt /etc/ssl/certs/ca-certificates.crt
@@ -77,6 +77,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: docker
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.HARBOR_IP }}/cads-dev-env/catalogue-api-service:${{ github.event.inputs.image_tag }}
           file: docker/catalogue-api-service/Dockerfile
