@@ -8,7 +8,7 @@ on:
         required: true
         default: 'latest'
   workflow_run:
-    workflows: 
+    workflows:
       - ecmwf-projects/cads-build-farm/build-images.yml
     types: [requested]
 
@@ -23,7 +23,7 @@ jobs:
         run: |
           ls /etc/docker
           sudo mkdir -p /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}" 
-          echo "${{ secrets.HARBOR_CERT }}" | sudo tee /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt >/dev/null 
+          echo "${{ secrets.HARBOR_CERT }}" | sudo tee /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt >/dev/null
       - name: Copy ca cert
         run: |
           sudo cp /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt /etc/ssl/certs/ca-certificates.crt

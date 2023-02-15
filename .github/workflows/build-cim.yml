@@ -1,4 +1,12 @@
-name: Build cads-monitor-statistics image
+#
+# CIM is splitted in two parts:
+# - cads-cim-api
+# - cads-cim-ui
+#
+# We need to build first the cads-cim-api and then the cads-cim-ui
+#
+
+name: Build cim-ui image
 
 on:
   workflow_dispatch:
@@ -53,20 +61,35 @@ jobs:
           buildkitd-flags: --debug
           config: buildkitd.toml
  
-      - name: Checkout cads-monitor-statistics repo
+      - name: Checkout cads-cim-api repo
         uses: actions/checkout@v3       
         with:
-          repository: ecmwf-projects/cads-monitor-statistics
+          repository: ecmwf-projects/cads-cim-api
           token: ${{ secrets.CADS_PAT }}
-          path: .
+          path: cads-cim-api
+ 
+      - name: Checkout cads-cim-ui repo
+        uses: actions/checkout@v3       
+        with:
+          repository: ecmwf-projects/cads-cim-ui
+          token: ${{ secrets.CADS_PAT }}
+          path: cads-cim-ui
         
-      - name: Build and push
+      - name: Build API and push
         uses: docker/build-push-action@v3
         
         with:
-          context: .
+          context: cads-cim-api
           push: true
-          tags: ${{ secrets.HARBOR_IP }}/cads-dev-env/cads-monitor-statistics:${{ github.event.inputs.image_tag }}
-          file: Dockerfile
- 
-
+          tags: ${{ secrets.HARBOR_IP }}/cads-backoffice-deployment/cads-cim-api:latest  # We always push the latest tag for the backend
+          file: cads-cim-api/Dockerfile
+        
+      - name: Build UI and push
+        uses: docker/build-push-action@v3
+        
+        with:
+          context: cads-cim-ui
+          push: true
+          pull: true  # We need to pull the backend image to build the frontend
+          tags: ${{ secrets.HARBOR_IP }}/cads-backoffice-deployment/cads-cim-ui:${{ github.event.inputs.image_tag }}
+          file: cads-cim-ui/Dockerfile

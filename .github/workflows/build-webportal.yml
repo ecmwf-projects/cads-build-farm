@@ -12,18 +12,6 @@ on:
       - ecmwf-projects/cads-build-farm/build-images.yml
     types: [requested]
 
-# DONT FORGET TO SET THE FOLLOWING GITHUB SECRETS (not necessary if the worflow is already working)
-# EMAIL_GITHUB
-# CADS_PAT -> github personal access token with repo and packages permissions
-# USERNAME_GITHUB
-env:
-  CADS_PORTAL: cds
-  CATALOGUE_API_PATH: /api/catalogue/v1
-  RETRIEVE_API_PATH: /api/retrieve/v1
-  INTERNAL_PROXY_URL: http://proxy
-  PROJECT_URL: http://cds2-test.copernicus-climate.eu
-  REACT_ENVIRONMENT: production
-
 jobs:
   build-docker-image:
     runs-on: ubuntu-latest
@@ -80,12 +68,7 @@ jobs:
           tags: ${{ secrets.HARBOR_IP }}/cads-dev-env/webportal:latest
           file: ./cads-webportal/docker/remote.Dockerfile
           build-args: |
-            CADS_PORTAL=${{ env.CADS_PORTAL}}
+            CADS_PORTAL=cds
             GITHUB_EMAIL=${{ secrets.EMAIL_GITHUB }}
             GITHUB_TOKEN=${{ secrets.CADS_PAT }}
             GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}
-            INTERNAL_PROXY_URL=${{ env.INTERNAL_PROXY_URL}}
-            CATALOGUE_API_PATH:${{ env.CATALOGUE_API_PATH}}
-            PROJECT_URL=${{ env.PROJECT_URL}}
-            RETRIEVE_API_PATH: ${{ env.RETRIEVE_API_PATH}}
-            REACT_ENVIRONMENT=${{ env.REACT_ENVIRONMENT}}

@@ -8,7 +8,7 @@ on:
         required: true
         default: 'latest'
   workflow_run:
-    workflows: 
+    workflows:
       - ecmwf-projects/cads-build-farm/build-images.yml
     types: [requested]
 
