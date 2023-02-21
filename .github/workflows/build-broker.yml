@@ -1,4 +1,4 @@
-name: Build broker-service image
+name: Build broker image
 
 on:
   workflow_dispatch:

@@ -12,13 +12,13 @@ jobs:
   build_broker_service:
     runs-on: ubuntu-latest
     steps:
-    - name: Build Broker Service image
+    - name: Build Broker image
       uses: convictional/trigger-workflow-and-wait@v1.6.5
       with:
         owner: ecmwf-projects
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
-        workflow_file_name: build-broker-service.yml
+        workflow_file_name: build-broker.yml
         ref: main
         client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
