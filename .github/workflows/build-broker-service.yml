@@ -88,4 +88,4 @@ jobs:
           context: docker
           push: true
           tags: ${{ secrets.HARBOR_IP }}/cads-dev-env/broker:${{ github.event.inputs.image_tag }}
-          file: docker/broker-service/Dockerfile
+          file: docker/broker/Dockerfile
