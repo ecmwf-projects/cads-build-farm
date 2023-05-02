@@ -64,6 +64,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cacholote
+        ref: COPDS-941-sqlalchemy2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cacholote
 
@@ -71,6 +72,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-catalogue
+        ref: COPDS-941-sqlalchemy2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-catalogue
 
@@ -92,6 +94,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-broker
+        ref: COPDS-941-sqlalchemy2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-broker
 
@@ -106,6 +109,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-processing-api-service
+        ref: COPDS-941-sqlalchemy2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-processing-api-service
 
