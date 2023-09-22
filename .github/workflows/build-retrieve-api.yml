@@ -69,6 +69,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cacholote
+        ref: pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cacholote
 
@@ -90,6 +91,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/ogc-api-processes-fastapi
+        ref: COPDS-1175-pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/ogc-api-processes-fastapi
 
@@ -97,6 +99,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-broker
+        ref: pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-broker
 
@@ -104,6 +107,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-adaptors
+        ref: remove-pydantic-dependency
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-adaptors
 
@@ -111,6 +115,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-processing-api-service
+        ref: COPDS-1175-pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-processing-api-service
 
@@ -118,6 +123,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-obs-catalogue-manager
+        ref: pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-obs-catalogue-manager
 

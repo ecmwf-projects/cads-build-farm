@@ -70,6 +70,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cacholote
+        ref: pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cacholote
 
@@ -84,6 +85,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-broker
+        ref: pydantic-v2
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-broker
 
