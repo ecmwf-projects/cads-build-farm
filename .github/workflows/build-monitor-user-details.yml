@@ -16,14 +16,6 @@ jobs:
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
 
-    - name: Setup harbor ca certificate from secret
-      run: |
-        ls /etc/docker
-        sudo mkdir -p /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"
-        echo "${{ secrets.HARBOR_CERT }}" | sudo tee /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt >/dev/null
-    - name: Copy ca cert
-      run: |
-        sudo cp /etc/docker/certs.d/"${{ secrets.HARBOR_IP }}"/ca.crt /etc/ssl/certs/ca-certificates.crt
     - name: Login to harbor registry
       uses: docker/login-action@v2
       with:
@@ -63,5 +55,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads-dev-env/cads-monitor-user-details:${{ github.event.inputs.image_tag }}
+        tags: ${{ secrets.HARBOR_IP }}/cads/cads-monitor-user-details:${{ github.event.inputs.image_tag }}
         file: Dockerfile
