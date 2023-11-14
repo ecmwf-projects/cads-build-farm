@@ -59,8 +59,11 @@ jobs:
         path: .
 
     - name: Build from tags condition
+      uses: aarcangeli/load-dotenv@v1.0.0
       if: ${{ github.event.inputs.image_tag != 'latest' }}
-      run: GITHUB_ENV=$(cat ./docker/versions.env)
+      with:
+        path: ./docker
+        filenames: versions.env
 
     - name: Echo env var
       run: echo ${CADS_BROKER:-main}
