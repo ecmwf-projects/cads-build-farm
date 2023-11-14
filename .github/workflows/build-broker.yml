@@ -63,7 +63,7 @@ jobs:
       shell: bash
       run: |
         while read line; do
-          echo "$line" >> $GITHUB_ENV
+          echo $line >> $GITHUB_ENV
         done < ./docker/versions.env
 
     - name: Checkout cacholote repo
