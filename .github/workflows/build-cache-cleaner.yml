@@ -58,10 +58,18 @@ jobs:
         token: ${{ secrets.CADS_PAT }}
         path: .
 
+    - name: Set env variables from versions file
+      if: ${{ github.event.inputs.image_tag != 'latest' }}
+      uses: xom9ikk/dotenv@v2
+      with:
+        path: ./docker/versions
+        mode: test
+  
     - name: Checkout cacholote repo
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cacholote
+        ref: ${{ env.CACHOLOTE }}
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cacholote
 
@@ -69,6 +77,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-worker
+        ref: ${{ env.CADS_WORKER }}
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-worker
 
@@ -76,6 +85,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: ecmwf-projects/cads-common
+        ref: ${{ env.CADS_COMMON }}
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-common
 

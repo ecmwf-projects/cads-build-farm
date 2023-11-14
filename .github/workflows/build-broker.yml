@@ -58,7 +58,7 @@ jobs:
         token: ${{ secrets.CADS_PAT }}
         path: .
 
-    - name: Set env variables from versions.env
+    - name: Set env variables from versions file
       if: ${{ github.event.inputs.image_tag != 'latest' }}
       uses: xom9ikk/dotenv@v2
       with:
