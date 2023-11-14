@@ -58,11 +58,16 @@ jobs:
         token: ${{ secrets.CADS_PAT }}
         path: .
 
+    - name: Build from tags condition
+      if: ${{ github.event.inputs.image_tag != 'latest' }}
+      run: GITHUB_ENV=$(cat ./docker/versions.env)
+
     - name: Checkout cacholote repo
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cacholote
         token: ${{ secrets.CADS_PAT }}
+        ref: ${CACHOLOTE:-main}
         path: ./docker/cacholote
 
     - name: Clone cads-common repo
@@ -70,12 +75,14 @@ jobs:
       with:
         repository: ecmwf-projects/cads-common
         token: ${{ secrets.CADS_PAT }}
+        ref: ${CADS_COMMON:-main}
         path: ./docker/cads-common
 
     - name: Checkout cads-broker repo
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-broker
+        ref: ${CADS_BROKER:-main}
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-broker
 
@@ -83,6 +90,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-worker
+        ref: ${CADS_WORKER:-main}
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-worker
 
