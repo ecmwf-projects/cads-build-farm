@@ -1,4 +1,4 @@
-name: Build broker image
+name: Test Build broker image
 
 on:
   workflow_dispatch:
@@ -62,42 +62,45 @@ jobs:
       if: ${{ github.event.inputs.image_tag != 'latest' }}
       run: GITHUB_ENV=$(cat ./docker/versions.env)
 
-    - name: Checkout cacholote repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cacholote
-        token: ${{ secrets.CADS_PAT }}
-        ref: ${CACHOLOTE:-main}
-        path: ./docker/cacholote
+    - name: Echo env var
+      run: echo ${CADS_BROKER:-main}
 
-    - name: Clone cads-common repo
-      uses: actions/checkout@v2
-      with:
-        repository: ecmwf-projects/cads-common
-        token: ${{ secrets.CADS_PAT }}
-        ref: ${CADS_COMMON:-main}
-        path: ./docker/cads-common
+    # - name: Checkout cacholote repo
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: ecmwf-projects/cacholote
+    #     token: ${{ secrets.CADS_PAT }}
+    #     ref: ${CACHOLOTE:-main}
+    #     path: ./docker/cacholote
 
-    - name: Checkout cads-broker repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-broker
-        ref: ${CADS_BROKER:-main}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-broker
+    # - name: Clone cads-common repo
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: ecmwf-projects/cads-common
+    #     token: ${{ secrets.CADS_PAT }}
+    #     ref: ${CADS_COMMON:-main}
+    #     path: ./docker/cads-common
 
-    - name: Checkout cads-worker repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-worker
-        ref: ${CADS_WORKER:-main}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-worker
+    # - name: Checkout cads-broker repo
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: ecmwf-projects/cads-broker
+    #     ref: ${CADS_BROKER:-main}
+    #     token: ${{ secrets.CADS_PAT }}
+    #     path: ./docker/cads-broker
 
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: docker
-        push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/broker:${{ github.event.inputs.image_tag }}
-        file: docker/broker/Dockerfile
+    # - name: Checkout cads-worker repo
+    #   uses: actions/checkout@v3
+    #   with:
+    #     repository: ecmwf-projects/cads-worker
+    #     ref: ${CADS_WORKER:-main}
+    #     token: ${{ secrets.CADS_PAT }}
+    #     path: ./docker/cads-worker
+
+    # - name: Build and push
+    #   uses: docker/build-push-action@v3
+    #   with:
+    #     context: docker
+    #     push: true
+    #     tags: ${{ secrets.HARBOR_IP }}/cads/broker:${{ github.event.inputs.image_tag }}
+    #     file: docker/broker/Dockerfile
