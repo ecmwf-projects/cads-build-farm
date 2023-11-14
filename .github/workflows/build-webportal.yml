@@ -3,14 +3,14 @@ name: Build webportal image
 on:
   workflow_dispatch:
     inputs:
+      deployment_branch:
+        description: 'Deployment branch'
+        required: true
+        default: 'main'
       image_tag:
         description: 'Image tag'
         required: true
         default: 'latest'
-      gh_branch:
-        description: 'Branch'
-        required: true
-        default: 'main'
   workflow_run:
     workflows:
     - ecmwf-projects/cads-build-farm/build-images.yml
@@ -49,13 +49,29 @@ jobs:
         buildkitd-flags: --debug
         config: buildkitd.toml
 
+    - name: Checkout cads-deployment repo
+      uses: actions/checkout@v3
+      with:
+        repository: ecmwf-projects/cads-deployment
+        ref: ${{ github.event.inputs.deployment_branch }}
+        token: ${{ secrets.CADS_PAT }}
+        path: .
+
+    - name: Set env variables from versions file
+      if: ${{ github.event.inputs.image_tag != 'latest' }}
+      uses: xom9ikk/dotenv@v2
+      with:
+        path: ./docker/versions
+        mode: test
+  
     - name: Checkout cads-webportal repo
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-webportal
+        ref: ${{ env.CADS_WEBPORTAL }}
         token: ${{ secrets.CADS_PAT }}
         path: ./cads-webportal
-        ref: ${{ github.event.inputs.gh_branch }}
+
     - name: Build and push
       uses: docker/build-push-action@v3
 
