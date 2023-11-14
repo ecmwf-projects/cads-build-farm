@@ -49,10 +49,26 @@ jobs:
         buildkitd-flags: --debug
         config: buildkitd.toml
 
+    - name: Checkout cads-deployment repo
+      uses: actions/checkout@v3
+      with:
+        repository: ecmwf-projects/cads-deployment
+        ref: ${{ github.event.inputs.deployment_branch }}
+        token: ${{ secrets.CADS_PAT }}
+        path: .
+
+    - name: Set env variables from versions file
+      if: ${{ github.event.inputs.image_tag != 'latest' }}
+      uses: xom9ikk/dotenv@v2
+      with:
+        path: ./docker/versions
+        mode: test
+  
     - name: Checkout cads-obs-catalogue-manager repo
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-obs-catalogue-manager
+        ref: ${{ env.CADS_OBS_CATALOGUE_MANAGER }}
         token: ${{ secrets.CADS_PAT }}
         path: cads-obs-catalogue-manager
         submodules: recursive
