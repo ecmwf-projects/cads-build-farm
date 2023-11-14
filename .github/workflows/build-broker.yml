@@ -11,6 +11,10 @@ on:
         description: 'Image tag'
         required: true
         default: 'latest'
+      tag_flag:
+        description: 'Clone from tags'
+        type: boolean
+        default: false
   workflow_run:
     workflows:
     - ecmwf-projects/cads-build-farm/build-images.yml
@@ -59,7 +63,7 @@ jobs:
         path: .
 
     - name: Set env variables from versions file
-      if: ${{ github.event.inputs.image_tag != 'latest' }}
+      if: ${{ github.event.inputs.tag_flag == 'true' }}
       uses: xom9ikk/dotenv@v2
       with:
         path: ./docker/versions
