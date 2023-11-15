@@ -19,7 +19,7 @@ on:
         default: 'latest'
   workflow_run:
     workflows:
-    - ecmwf-projects/cads-build-farm/build-images.yml
+    - ecmwf-projects/cads-build-farm/build-cads-image.yml
     types: [requested]
 
 
