@@ -38,6 +38,7 @@ on:
 
 jobs:
   build-docker-image:
+    name: Build ${{github.event.inputs.image}}:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
     runs-on: ubuntu-latest
     steps:
     - name: Set up QEMU
