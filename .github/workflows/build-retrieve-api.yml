@@ -7,16 +7,30 @@ on:
         description: 'Deployment branch'
         required: true
         default: 'main'
-      image_tag:
-        description: 'Image tag'
-        required: true
-        default: 'latest'
+      image:
+        type: choice
+        description: CADS image
+        options:
+        - broker
+        - cache-cleaner
+        - catalogue-api
+        - catalogue-manager
+        - dask-mars
+        - dev-explorer
+        - keycloak-db
+        - profiles-api
+        - retrieve-api
+        - worker
       build_mode:
         type: choice
         description: Build mode
         options:
         - dev
         - stable
+      image_tag:
+        description: 'Image tag'
+        required: true
+        default: 'latest'
   workflow_run:
     workflows:
     - ecmwf-projects/cads-build-farm/build-images.yml
@@ -68,7 +82,7 @@ jobs:
       with:
         context: docker
         push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/retrieve-api:${{ github.event.inputs.image_tag }}
-        file: docker/retrieve-api/Dockerfile
+        tags: ${{ secrets.HARBOR_IP }}/cads/${{ github.event.inputs.image }}:${{ github.event.inputs.image_tag }}
+        file: docker/${{ github.event.inputs.image }}/Dockerfile
         build-args: |
           MODE=${{ github.event.inputs.build_mode }}
