@@ -18,7 +18,7 @@ on:
 
 jobs:
   build-docker-image:
-    name: Build ${{github.event.inputs.image_name}}:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
+    name: Build ${{inputs.image_name}}:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
     runs-on: ubuntu-latest
     steps:
     - name: Set up QEMU
@@ -54,7 +54,7 @@ jobs:
       uses: actions/checkout@v3
       with:
         repository: ecmwf-projects/cads-deployment
-        ref: ${{ github.event.inputs.deployment_branch }}
+        ref: ${{ inputs.deployment_branch }}
         token: ${{ secrets.CADS_PAT }}
         path: .
 
@@ -63,7 +63,7 @@ jobs:
       with:
         context: docker
         push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_tag }}
-        file: docker/${{ github.event.inputs.image_name }}/Dockerfile
+        tags: ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}:${{ inputs.image_tag }}
+        file: docker/${{ inputs.image_name }}/Dockerfile
         build-args: |
-          MODE=${{ github.event.inputs.build_mode }}
+          MODE=${{ inputs.build_mode }}
