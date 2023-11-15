@@ -7,14 +7,16 @@ on:
         description: 'Deployment branch'
         required: true
         default: 'main'
+      build_mode:
+        type: choice
+        description: Build mode
+        options:
+        - dev
+        - stable
       image_tag:
         description: 'Image tag'
         required: true
         default: 'latest'
-      tag_flag:
-        description: 'Clone from tags'
-        type: boolean
-        default: false
   workflow_run:
     workflows:
     - ecmwf-projects/cads-build-farm/build-images.yml
@@ -22,89 +24,19 @@ on:
 
 
 jobs:
-
-  build-docker-image:
+  build_broker:
+    name: Build broker:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
     runs-on: ubuntu-latest
     steps:
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-
-    - name: Login to harbor registry
-      uses: docker/login-action@v2
+    - name: Build Broker image
+      uses: convictional/trigger-workflow-and-wait@v1.6.5
       with:
-        registry: '${{ secrets.HARBOR_IP }}'
-        username: ${{ secrets.HARBOR_USER }}
-        password: ${{ secrets.HARBOR_TOKEN }}
-    - name: Setup docker context for buildx
-      id: buildx-context
-      run: docker context create builders || docker context use builders
-    - name: Create BuildKit Configuration
-      run: |
-        cat <<EOF > buildkitd.toml
-        [registry."${{ secrets.HARBOR_IP }}"]
-          http = false
-          insecure = false
-          ca=["/etc/ssl/certs/ca-certificates.crt"]
-        EOF
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        version: v0.9.1
-        endpoint: builders
-        buildkitd-flags: --debug
-        config: buildkitd.toml
-
-    - name: Checkout cads-deployment repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-deployment
-        ref: ${{ github.event.inputs.deployment_branch }}
-        token: ${{ secrets.CADS_PAT }}
-        path: .
-
-    - name: Set env variables from versions file
-      if: ${{ github.event.inputs.tag_flag == 'true' }}
-      uses: xom9ikk/dotenv@v2
-      with:
-        path: ./docker/versions
-        mode: test
-
-    - name: Checkout cacholote repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cacholote
-        ref: ${{ env.CACHOLOTE }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cacholote
-
-    - name: Clone cads-common repo
-      uses: actions/checkout@v2
-      with:
-        repository: ecmwf-projects/cads-common
-        ref: ${{ env.CADS_COMMON }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-common
-
-    - name: Checkout cads-broker repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-broker
-        ref: ${{ env.CADS_BROKER }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-broker
-
-    - name: Checkout cads-worker repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-worker
-        ref: ${{ env.CADS_WORKER }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-worker
-
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: docker
-        push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/broker:${{ github.event.inputs.image_tag }}
-        file: docker/broker/Dockerfile
+        owner: ecmwf-projects
+        repo: cads-build-farm
+        github_token: ${{ secrets.CADS_PAT }}
+        workflow_file_name: build-cads-image.yml
+        ref: main
+        client_payload: '{ "image": "broker", "image_tag": "${{ github.event.inputs.image_tag }}", "build_mode": "${{ github.event.inputs.build_mode }}", "deployment_branch": "${{ github.event.inputs.deployment_branch }}" }'
+        propagate_failure: false
+        trigger_workflow: true
+        wait_workflow: true
