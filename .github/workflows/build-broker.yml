@@ -17,26 +17,14 @@ on:
         description: 'Image tag'
         required: true
         default: 'latest'
-  workflow_run:
-    workflows:
-    - ecmwf-projects/cads-build-farm/build-cads-image.yml
-    types: [requested]
-
 
 jobs:
   build_broker:
     name: Build broker:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Build Broker image
-      uses: convictional/trigger-workflow-and-wait@v1.6.5
-      with:
-        owner: ecmwf-projects
-        repo: cads-build-farm
-        github_token: ${{ secrets.CADS_PAT }}
-        workflow_file_name: build-cads-image.yml
-        ref: main
-        client_payload: '{ "image": "broker", "image_tag": "${{ github.event.inputs.image_tag }}", "build_mode": "${{ github.event.inputs.build_mode }}", "deployment_branch": "${{ github.event.inputs.deployment_branch }}" }'
-        propagate_failure: false
-        trigger_workflow: true
-        wait_workflow: true
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml
+    with:
+      iamge: broker
+      deployment_branch: ${{ github.event.inputs.deployment_branch }}
+      build_mode: ${{ github.event.inputs.build_mode }}
+      image_tag: ${{ github.event.inputs.image_tag }}
+    secrets: inherit

@@ -1,41 +1,20 @@
 name: Build CADS image
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       deployment_branch:
-        description: 'Deployment branch'
+        type: string
         required: true
-        default: 'main'
       image:
-        type: choice
-        description: CADS image
-        options:
-        - broker
-        - cache-cleaner
-        - catalogue-api
-        - catalogue-manager
-        - dask-mars
-        - dev-explorer
-        - keycloak-db
-        - profiles-api
-        - retrieve-api
-        - worker
-      build_mode:
-        type: choice
-        description: Build mode
-        options:
-        - dev
-        - stable
-      image_tag:
-        description: 'Image tag'
+        type: string
         required: true
-        default: 'latest'
-  workflow_run:
-    workflows:
-    - ecmwf-projects/cads-build-farm/build-images.yml
-    - ecmwf-projects/cads-build-farm/build-broker.yml
-    types: [requested]
+      build_mode:
+        type: string
+        required: true
+      image_tag:
+        type: string
+        required: true
 
 jobs:
   build-docker-image:
