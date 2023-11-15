@@ -7,91 +7,24 @@ on:
         description: 'Deployment branch'
         required: true
         default: 'main'
+      build_mode:
+        type: choice
+        description: Build mode
+        options:
+        - dev
+        - stable
       image_tag:
         description: 'Image tag'
         required: true
         default: 'latest'
-  workflow_run:
-    workflows:
-    - ecmwf-projects/cads-build-farm/build-images.yml
-    types: [requested]
-
-jobs:
-
-  build-docker-image:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-
-    - name: Login to harbor registry
-      uses: docker/login-action@v2
-      with:
-        registry: "${{ secrets.HARBOR_IP }}"
-        username: ${{ secrets.HARBOR_USER }}
-        password: ${{ secrets.HARBOR_TOKEN }}
-    - name: Setup docker context for buildx
-      id: buildx-context
-      run: docker context create builders || docker context use builders
-
-    - name: Create BuildKit Configuration
-      run: |
-        cat <<EOF > buildkitd.toml
-        [registry."${{ secrets.HARBOR_IP }}"]
-          http = false
-          insecure = false
-          ca=["/etc/ssl/certs/ca-certificates.crt"]
-        EOF
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        version: v0.9.1
-        endpoint: builders
-        buildkitd-flags: --debug
-        config: buildkitd.toml
-
-    - name: Checkout cads-deployment repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-deployment
-        ref: ${{ github.event.inputs.deployment_branch }}
-        token: ${{ secrets.CADS_PAT }}
-        path: .
-
-    - name: Set env variables from versions file
-      if: ${{ github.event.inputs.image_tag != 'latest' }}
-      uses: xom9ikk/dotenv@v2
-      with:
-        path: ./docker/versions
-        mode: test
   
-    - name: Clone cads-licences repo
-      uses: actions/checkout@v2
-      with:
-        repository: ecmwf-projects/cads-licences
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-licences
-
-    - name: Clone cads-common repo
-      uses: actions/checkout@v2
-      with:
-        repository: ecmwf-projects/cads-common
-        ref: ${{ env.CADS_COMMON }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-common
-
-    - name: Checkout cads-extended-profiles repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-extended-profiles
-        ref: ${{ env.CADS_EXTENDED_PROFILES }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-extended-profiles
-
-    - name: Build and push
-      uses: docker/build-push-action@v3
-      with:
-        context: docker
-        push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/profiles-api:${{ github.event.inputs.image_tag }}
-        file: docker/profiles-api/Dockerfile
+jobs:
+  build_profiles_api:
+    name: Build profiles-api:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@build-from-versions-file
+    with:
+      image_name: profiles-api
+      deployment_branch: ${{ inputs.deployment_branch }}
+      build_mode: ${{ inputs.build_mode }}
+      image_tag: ${{ inputs.image_tag }}
+    secrets: inherit
