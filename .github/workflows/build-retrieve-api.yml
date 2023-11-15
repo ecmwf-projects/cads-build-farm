@@ -1,3 +1,5 @@
+name: Build CADS image
+
 on:
   workflow_dispatch:
     inputs:
