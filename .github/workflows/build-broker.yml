@@ -21,7 +21,7 @@ on:
 jobs:
   build_broker:
     name: Build broker:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
-    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@main
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@build-from-versions-file
     with:
       image: broker
       deployment_branch: ${{ github.event.inputs.deployment_branch }}
