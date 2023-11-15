@@ -6,7 +6,7 @@ on:
       deployment_branch:
         type: string
         required: true
-      image:
+      image_name:
         type: string
         required: true
       build_mode:
@@ -18,7 +18,7 @@ on:
 
 jobs:
   build-docker-image:
-    name: Build ${{github.event.inputs.image}}:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
+    name: Build ${{github.event.inputs.image_name}}:${{ github.event.inputs.image_tag }} from ${{ github.event.inputs.build_mode }}
     runs-on: ubuntu-latest
     steps:
     - name: Set up QEMU
@@ -63,7 +63,7 @@ jobs:
       with:
         context: docker
         push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/${{ github.event.inputs.image }}:${{ github.event.inputs.image_tag }}
-        file: docker/${{ github.event.inputs.image }}/Dockerfile
+        tags: ${{ secrets.HARBOR_IP }}/cads/${{ github.event.inputs.image_name }}:${{ github.event.inputs.image_tag }}
+        file: docker/${{ github.event.inputs.image_name }}/Dockerfile
         build-args: |
           MODE=${{ github.event.inputs.build_mode }}
