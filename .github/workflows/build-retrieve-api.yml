@@ -11,6 +11,12 @@ on:
         description: 'Image tag'
         required: true
         default: 'latest'
+      build_mode:
+        type: choice
+        description: Build mode
+        options:
+        - dev
+        - stable
   workflow_run:
     workflows:
     - ecmwf-projects/cads-build-farm/build-images.yml
@@ -57,77 +63,6 @@ jobs:
         token: ${{ secrets.CADS_PAT }}
         path: .
 
-    - name: Set env variables from versions file
-      if: ${{ github.event.inputs.image_tag != 'latest' }}
-      uses: xom9ikk/dotenv@v2
-      with:
-        path: ./docker/versions
-        mode: test
-  
-    - name: Checkout cacholote repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cacholote
-        ref: ${{ env.CACHOLOTE }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cacholote
-
-    - name: Checkout cads-catalogue repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-catalogue
-        ref: ${{ env.CADS_CATALOGUE }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-catalogue
-
-    - name: Clone cads-common repo
-      uses: actions/checkout@v2
-      with:
-        repository: ecmwf-projects/cads-common
-        ref: ${{ env.CADS_COMMON }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-common
-
-    - name: Checkout ogc-api-processes-fastapi repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/ogc-api-processes-fastapi
-        ref: ${{ env.OGC_API_PROCESSES_FASTAPI }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/ogc-api-processes-fastapi
-
-    - name: Checkout cads-broker repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-broker
-        ref: ${{ env.CADS_BROKER }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-broker
-
-    - name: Checkout cads-adaptors repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-adaptors
-        ref: ${{ env.CADS_ADAPTORS }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-adaptors
-
-    - name: Checkout cads-processing-api-service repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-processing-api-service
-        ref: ${{ env.CADS_PROCESSING_API_SERVICE }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-processing-api-service
-
-    - name: Checkout cads-obs-catalogue-manager repo
-      uses: actions/checkout@v3
-      with:
-        repository: ecmwf-projects/cads-obs-catalogue-manager
-        ref: ${{ env.CADS_OBS_CATALOGUE_MANAGER }}
-        token: ${{ secrets.CADS_PAT }}
-        path: ./docker/cads-obs-catalogue-manager
-
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
@@ -135,3 +70,5 @@ jobs:
         push: true
         tags: ${{ secrets.HARBOR_IP }}/cads/retrieve-api:${{ github.event.inputs.image_tag }}
         file: docker/retrieve-api/Dockerfile
+        build-args: |
+          MODE=${{ github.event.inputs.build_mode }}
