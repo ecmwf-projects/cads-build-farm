@@ -3,6 +3,16 @@ name: Build all images
 on:
   workflow_dispatch:
     inputs:
+      deployment_branch:
+        description: 'Deployment branch'
+        required: true
+        default: 'main'
+      build_mode:
+        type: choice
+        description: Build mode
+        options:
+        - dev
+        - stable
       image_tag:
         description: 'Release tag'
         required: true
@@ -20,7 +30,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-broker.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
@@ -52,7 +62,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-cache-cleaner.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
@@ -68,7 +78,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-catalogue-api.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
@@ -84,7 +94,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-dev-explorer.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
@@ -116,7 +126,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-profiles-api.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
@@ -132,7 +142,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-retrieve-api.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
@@ -164,7 +174,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-worker.yml
         ref: main
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
