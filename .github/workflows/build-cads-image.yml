@@ -67,3 +67,5 @@ jobs:
         file: docker/${{ inputs.image_name }}/Dockerfile
         build-args: |
           MODE=${{ inputs.build_mode }}
+        secret-envs:
+          CADS_PAT=${{ secrets.CADS_PAT }}
