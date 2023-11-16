@@ -17,7 +17,11 @@ on:
         description: 'Image tag'
         required: true
         default: 'latest'
-  
+  workflow_run:
+    workflows:
+    - ecmwf-projects/cads-build-farm/build-images.yml
+    types: [requested]
+      
 jobs:
   build_worker:
     name: Build worker:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
