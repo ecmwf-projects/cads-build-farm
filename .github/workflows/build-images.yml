@@ -158,7 +158,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-webportal.yml
         ref: ${{ github.event.ref }}
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
