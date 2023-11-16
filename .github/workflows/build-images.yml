@@ -29,7 +29,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-broker.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -45,7 +45,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-broker-exporter.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -61,7 +61,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-cache-cleaner.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -77,7 +77,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-catalogue-api.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -93,7 +93,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-dev-explorer.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -109,7 +109,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-csw-api.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -125,7 +125,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-profiles-api.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -141,7 +141,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-retrieve-api.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -157,7 +157,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-webportal.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -173,7 +173,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-worker.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "deployment_branch": "${{ github.event.inputs.deployment_branch }}", "build_mode": "${{ github.event.inputs.build_mode }}", "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
@@ -189,7 +189,7 @@ jobs:
         repo: cads-build-farm
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-dask-mars.yml
-        ref: main
+        ref: ${{ github.event.ref }}
         client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
         propagate_failure: false
         trigger_workflow: true
