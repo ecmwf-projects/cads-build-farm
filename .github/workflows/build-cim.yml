@@ -65,7 +65,7 @@ jobs:
         path: cads-cim-ui
 
     - name: Build API and push
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v5
 
       with:
         context: cads-cim-api
@@ -74,7 +74,7 @@ jobs:
         file: cads-cim-api/Dockerfile
 
     - name: Build UI and push
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v5
 
       with:
         context: cads-cim-ui
