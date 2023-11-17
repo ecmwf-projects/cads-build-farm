@@ -43,7 +43,7 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-monitor-nrpe repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-monitor-nrpe
         token: ${{ secrets.CADS_PAT }}

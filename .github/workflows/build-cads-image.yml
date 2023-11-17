@@ -51,7 +51,7 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-deployment repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-deployment
         ref: ${{ inputs.deployment_branch }}
