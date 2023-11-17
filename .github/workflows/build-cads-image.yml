@@ -68,5 +68,6 @@ jobs:
         build-args: |
           MODE=${{ inputs.build_mode }}
           CADS_PAT=${{ secrets.CADS_PAT }}
-          EMAIL_GITHUB=${{ secrets.EMAIL_GITHUB }}
-          USERNAME_GITHUB=${{ secrets.USERNAME_GITHUB }}
+          GITHUB_TOKEN=${{ secrets.CADS_PAT }}
+          GITHUB_EMAIL=${{ secrets.EMAIL_GITHUB }}
+          GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}
