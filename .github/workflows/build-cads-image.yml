@@ -69,5 +69,4 @@ jobs:
           MODE=${{ inputs.build_mode }}
           CADS_PAT=${{ secrets.CADS_PAT }}
           EMAIL_GITHUB=${{ secrets.EMAIL_GITHUB }}
-          TOKEN_GITHUB=${{ secrets.TOKEN_GITHUB }}
           USERNAME_GITHUB=${{ secrets.USERNAME_GITHUB }}
