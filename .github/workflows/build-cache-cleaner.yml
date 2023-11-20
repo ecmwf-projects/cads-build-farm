@@ -26,7 +26,7 @@ on:
 jobs:
   build_cache_cleaner:
     name: Build cache-cleaner:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
-    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@build-from-versions-file
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@main
     with:
       image_name: cache-cleaner
       deployment_branch: ${{ inputs.deployment_branch }}

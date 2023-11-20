@@ -25,7 +25,7 @@ on:
 jobs:
   build_retrieve_api:
     name: Build retrieve-api:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
-    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@build-from-versions-file
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@main
     with:
       image_name: retrieve-api
       deployment_branch: ${{ inputs.deployment_branch }}
