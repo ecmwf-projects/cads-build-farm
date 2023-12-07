@@ -9,7 +9,6 @@
 name: Build cim-ui image
 
 on:
-  push:
   workflow_dispatch:
     inputs:
       image_tag:
