@@ -1,0 +1,34 @@
+name: Build backup-restore image
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_branch:
+        description: 'Deployment branch'
+        required: true
+        default: 'main'
+      build_mode:
+        type: choice
+        description: Build mode
+        options:
+        - dev
+        - stable
+      image_tag:
+        description: 'Image tag'
+        required: true
+        default: 'latest'
+  workflow_run:
+    workflows:
+    - ecmwf-projects/cads-build-farm/build-images.yml
+    types: [requested]
+      
+jobs:
+  build_backup_restore:
+    name: Build backup-restore:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/build-cads-image.yml@main
+    with:
+      image_name: backup-restore
+      deployment_branch: ${{ inputs.deployment_branch }}
+      build_mode: ${{ inputs.build_mode }}
+      image_tag: ${{ inputs.image_tag }}
+    secrets: inherit
