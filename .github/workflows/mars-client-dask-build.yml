@@ -1,4 +1,4 @@
-name: Build dask-mars image
+name: Build mars-mars-client image
 
 on:
   workflow_dispatch:
