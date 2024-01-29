@@ -63,6 +63,10 @@ jobs:
         repository: ecmwf-projects/cads-common
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-common
+        
+    - name: Setup bitbucket netrc
+      run: |
+        echo "${{ secrets.BITBUCKET_NETRC }}" > docker/netrc
 
     - name: Copy files
       run: |
