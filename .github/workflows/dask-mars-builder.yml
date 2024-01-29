@@ -1,0 +1,79 @@
+name: Build dask-mars-builder image
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_branch:
+        description: 'Deployment branch'
+        required: true
+        default: 'main'
+      image_tag:
+        description: 'Image tag'
+        required: true
+        default: 'latest'
+  workflow_run:
+    workflows:
+    - ecmwf-projects/cads-build-farm/build-images.yml
+    types: [requested]
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Login to harbor registry
+      uses: docker/login-action@v2
+      with:
+        registry: '${{ secrets.HARBOR_IP }}'
+        username: ${{ secrets.HARBOR_USER }}
+        password: ${{ secrets.HARBOR_TOKEN }}
+    - name: Setup docker context for buildx
+      id: buildx-context
+      run: docker context create builders || docker context use builders
+
+    - name: Create BuildKit Configuration
+      run: |
+        cat <<EOF > buildkitd.toml
+        [registry."${{ secrets.HARBOR_IP }}"]
+          http = false
+          insecure = false
+          ca=["/etc/ssl/certs/ca-certificates.crt"]
+        EOF
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        version: v0.9.1
+        endpoint: builders
+        buildkitd-flags: --debug
+        config: buildkitd.toml
+
+    - name: Checkout cads-deployment repo
+      uses: actions/checkout@v3
+      with:
+        repository: ecmwf-projects/cads-deployment
+        ref: ${{ github.event.inputs.deployment_branch }}
+        token: ${{ secrets.CADS_PAT }}
+        path: .
+
+    - name: Clone cads-common repo
+      uses: actions/checkout@v2
+      with:
+        repository: ecmwf-projects/cads-common
+        token: ${{ secrets.CADS_PAT }}
+        path: ./docker/cads-common
+
+    - name: Setup bitbucket netrc
+      run: |
+        echo "${{ secrets.BITBUCKET_NETRC }}" > docker/netrc
+
+
+    - name: Build and push
+      uses: docker/build-push-action@v3
+
+      with:
+        context: docker
+        push: true
+        tags: ${{ secrets.HARBOR_IP }}/cads/dask-mars-builer:${{ github.event.inputs.image_tag }}
+        file: docker/dask-mars-builder/Dockerfile
