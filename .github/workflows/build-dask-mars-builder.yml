@@ -64,9 +64,10 @@ jobs:
         token: ${{ secrets.CADS_PAT }}
         path: ./docker/cads-common
 
-    - name: Copy files
+    - name: Setup bitbucket netrc
       run: |
-        cp docker/dask-mars/mars docker/mars
+        echo "${{ secrets.BITBUCKET_NETRC }}" > docker/netrc
+
 
     - name: Build and push
       uses: docker/build-push-action@v3
@@ -74,5 +75,5 @@ jobs:
       with:
         context: docker
         push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/dask-mars:${{ github.event.inputs.image_tag }}
-        file: docker/dask-mars/Dockerfile
+        tags: ${{ secrets.HARBOR_IP }}/cads/dask-mars-builer:${{ github.event.inputs.image_tag }}
+        file: docker/dask-mars-builder/Dockerfile
