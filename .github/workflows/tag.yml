@@ -25,7 +25,7 @@ jobs:
       with:
         repository: ecmwf-projects/cads-deployment
         token: ${{ secrets.CADS_PAT }}
-        ref: ${{ github.event.inputs.deployment_branch }}
+        ref: ${{ inputs.deployment_branch }}
         path: .
 
     - name: Setup Python
@@ -35,7 +35,7 @@ jobs:
     - name: Install Dependencies
       run: pip install requests typer
     - name: Run Python Script
-      run: python release.py --image-tag ${{ github.event.inputs.image_tag }} ${{ github.event.inputs.new_tag }}
+      run: python release.py --image-tag ${{ inputs.image_tag }} ${{ inputs.new_tag }}
       env:
         HARBOR_USER: ${{ secrets.HARBOR_USER }}
         HARBOR_TOKEN: ${{ secrets.HARBOR_TOKEN }}    
