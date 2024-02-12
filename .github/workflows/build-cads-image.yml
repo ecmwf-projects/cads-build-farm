@@ -58,21 +58,23 @@ jobs:
         token: ${{ secrets.CADS_PAT }}
         path: .
 
-    - name: Docker meta
-      id: meta
-      uses: docker/metadata-action@v3
-      with:
-        images: ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}
-        tags: |
-          type=raw,value=${{ inputs.image_tag }},enabled=true
-          type=raw,value=latest,enabled=true
+    # - name: Docker meta
+    #   id: meta
+    #   uses: docker/metadata-action@v3
+    #   with:
+    #     images: ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}
+    #     tags: |
+    #       type=raw,value=${{ inputs.image_tag }},enabled=true
+    #       type=raw,value=latest,enabled=true
 
     - name: Build and push
       uses: docker/build-push-action@v3
       with:
         context: docker
         push: true
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: |
+          ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}:${{ inputs.image_tag }}
+          ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}:latest
         file: docker/${{ inputs.image_name }}/Dockerfile
         build-args: |
           MODE=${{ inputs.build_mode }}
@@ -81,11 +83,11 @@ jobs:
           GITHUB_EMAIL=${{ secrets.EMAIL_GITHUB }}
           GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}
 
-    - name: Tag ${{ inputs.image_name }} with "latest"
-      uses: ecmwf-projects/cads-build-farm/.github/workflows/tag.yml@build-also-latest-with-tags
-      with:
-        deployment_branch: ${{ inputs.deployment_branch }}
-        new_tag: latest
-        image_tag: ${{ inputs.image_tag }}
-        repo_name: ${{ inputs.image_name }}
+    # - name: Tag ${{ inputs.image_name }} with "latest"
+    #   uses: ecmwf-projects/cads-build-farm/.github/workflows/tag.yml@build-also-latest-with-tags
+    #   with:
+    #     deployment_branch: ${{ inputs.deployment_branch }}
+    #     new_tag: latest
+    #     image_tag: ${{ inputs.image_tag }}
+    #     repo_name: ${{ inputs.image_name }}
     
