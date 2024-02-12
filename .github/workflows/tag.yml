@@ -15,9 +15,6 @@ on:
         description: 'New tag'
         required: true
         default: 'test'
-      repo_name:
-        description: 'Repository name'
-        required: true
 
 jobs:
   tag-harbor-images:
@@ -38,7 +35,7 @@ jobs:
     - name: Install Dependencies
       run: pip install requests typer
     - name: Run Python Script
-      run: python release.py --repo-name ${{ inputs.repo_name }} --image-tag ${{ inputs.image_tag }} ${{ inputs.new_tag }}
+      run: python release.py --image-tag ${{ inputs.image_tag }} ${{ inputs.new_tag }}
       env:
         HARBOR_USER: ${{ secrets.HARBOR_USER }}
         HARBOR_TOKEN: ${{ secrets.HARBOR_TOKEN }}    
