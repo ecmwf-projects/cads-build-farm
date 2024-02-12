@@ -80,3 +80,12 @@ jobs:
           GITHUB_TOKEN=${{ secrets.CADS_PAT }}
           GITHUB_EMAIL=${{ secrets.EMAIL_GITHUB }}
           GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}
+
+    - name: Tag ${{ inputs.image_name }} with "latest"
+      uses: ecmwf-projects/cads-build-farm/.github/workflows/tag.yml@build-also-latest-with-tags
+      with:
+        deployment_branch: ${{ inputs.deployment_branch }}
+        new_tag: latest
+        image_tag: ${{ inputs.image_tag }}
+        repo_name: ${{ inputs.image_name }}
+    
