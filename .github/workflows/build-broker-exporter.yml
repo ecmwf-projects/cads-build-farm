@@ -43,7 +43,7 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-broker-exporter repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-broker-exporter
         token: ${{ secrets.CADS_PAT }}

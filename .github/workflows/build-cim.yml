@@ -51,14 +51,14 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-cim-api repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-cim-api
         token: ${{ secrets.CADS_PAT }}
         path: cads-cim-api
 
     - name: Checkout cads-cim-ui repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-cim-ui
         token: ${{ secrets.CADS_PAT }}
