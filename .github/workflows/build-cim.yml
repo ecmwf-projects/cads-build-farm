@@ -87,7 +87,7 @@ jobs:
         push: true
         # Arguments for using the cads-cim-api image in the cads-cim-ui build
         build_args: |
-          --build-arg CIM_API_IMAGE=${{ secrets.HARBOR_IP }}/cads/cads-backoffice-deployment/cads-cim-api:${{ github.event.inputs.image_tag }}
+          CIM_API_IMAGE: ${{ secrets.HARBOR_IP }}/cads/cads-backoffice-deployment/cads-cim-api:${{ github.event.inputs.image_tag }}
         pull: true # We need to pull the backend image to build the frontend
         tags: ${{ secrets.HARBOR_IP }}/cads/cads-backoffice-deployment/cads-cim-ui:${{ github.event.inputs.image_tag }}
         file: cads-cim-ui/Dockerfile
