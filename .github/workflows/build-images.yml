@@ -179,18 +179,18 @@ jobs:
         trigger_workflow: true
         wait_workflow: true
 
-  build_dask_mars:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Build dask Mars image
-      uses: convictional/trigger-workflow-and-wait@v1.6.5
-      with:
-        owner: ecmwf-projects
-        repo: cads-build-farm
-        github_token: ${{ secrets.CADS_PAT }}
-        workflow_file_name: build-dask-mars.yml
-        ref: ${{ github.event.ref }}
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
-        propagate_failure: false
-        trigger_workflow: true
-        wait_workflow: true
+  # build_dask_mars:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Build dask Mars image
+  #     uses: convictional/trigger-workflow-and-wait@v1.6.5
+  #     with:
+  #       owner: ecmwf-projects
+  #       repo: cads-build-farm
+  #       github_token: ${{ secrets.CADS_PAT }}
+  #       workflow_file_name: build-dask-mars.yml
+  #       ref: ${{ github.event.ref }}
+  #       client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+  #       propagate_failure: false
+  #       trigger_workflow: true
+  #       wait_workflow: true
