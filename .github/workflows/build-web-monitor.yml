@@ -42,10 +42,10 @@ jobs:
         buildkitd-flags: --debug
         config: buildkitd.toml
 
-    - name: Checkout cads-web-monitor repo
+    - name: Checkout cads-monitor-web repo
       uses: actions/checkout@v3
       with:
-        repository: ecmwf-projects/cads-web-monitor
+        repository: ecmwf-projects/cads-monitor-web
         token: ${{ secrets.CADS_PAT }}
         path: .
 
@@ -55,5 +55,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.HARBOR_IP }}/cads/cads-web-monitor:${{ github.event.inputs.image_tag }}
+        tags: ${{ secrets.HARBOR_IP }}/cads/cads-monitor-web:${{ github.event.inputs.image_tag }}
         file: Dockerfile
