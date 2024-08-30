@@ -70,6 +70,7 @@ jobs:
         build-args: |
           MODE=${{ inputs.build_mode }}
           CADS_PAT=${{ secrets.CADS_PAT }}
+          CDS_PAT=${{ secrets.BITBUCKET_TOKEN }}
           GITHUB_TOKEN=${{ secrets.CADS_PAT }}
           GITHUB_EMAIL=${{ secrets.EMAIL_GITHUB }}
           GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}
