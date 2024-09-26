@@ -17,6 +17,11 @@ on:
         description: 'Release tag'
         required: true
         default: 'test'
+  workflow_run:
+    workflows:
+      - ecmwf-projects/cads-deployment/release.yml
+      types: [requested]
+
 jobs:
 
   build_broker:
