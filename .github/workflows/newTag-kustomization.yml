@@ -1,0 +1,35 @@
+on: 
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Release tag'
+        required: true
+        default: 'test'
+      environment:
+        description: 'Select the environment to change'
+        required: true
+        default: 'dev'
+
+jobs:
+  
+  apply_release_on_kustomize:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout cads-deployment repo
+      uses: actions/checkout@v3
+      with:
+          repository: ecmwf-projects/cads-deployment
+          ref: build-images-test
+          token: ${{ secrets.CADS_PAT }}
+          path: .
+
+    - name: Update test/kustomization.yaml file
+      run: |
+        sed -i "s/newTag:.*/newTag: '${{ github.event.inputs.image_tag }}'/g" ./kustomize/overlays/${{ github.event.inputs.environment }}/kustomization.yaml
+
+    - name: Commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Tagged test images to ${{ github.event.inputs.image_tag }}"
+        branch: build-images-test
