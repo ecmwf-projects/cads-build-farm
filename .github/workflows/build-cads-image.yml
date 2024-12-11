@@ -65,7 +65,6 @@ jobs:
         push: true
         tags: |
           ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}:${{ inputs.image_tag }}
-          ${{ secrets.HARBOR_IP }}/cads/${{ inputs.image_name }}:latest
         file: docker/${{ inputs.image_name }}/Dockerfile
         build-args: |
           MODE=${{ inputs.build_mode }}
