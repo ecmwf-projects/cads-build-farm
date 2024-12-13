@@ -43,7 +43,7 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-monitor-user-details repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-monitor-user-details
         token: ${{ secrets.CADS_PAT }}
