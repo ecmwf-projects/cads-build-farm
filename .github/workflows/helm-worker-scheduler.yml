@@ -1,0 +1,38 @@
+name: Build worker-scheduler chart
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment_branch:
+        description: 'Deployment branch'
+        required: true
+        default: 'main'
+      build_mode:
+        type: choice
+        description: Build mode
+        options:
+        - dev
+        - stable
+      image_tag:
+        description: 'Image tag'
+        required: true
+        default: 'latest'
+  workflow_run:
+    workflows:
+    - ecmwf-projects/cads-build-farm/helm-chart.yaml
+    types: [requested]
+
+
+jobs:
+  build_helm_chart:
+    name: Build helm chart:${{ inputs.image_tag }} from ${{ inputs.build_mode }}
+    uses: ecmwf-projects/cads-build-farm/.github/workflows/helm-chart.yaml@main
+    with:
+      helmFolder: helm_output
+      build_mode: ${{ inputs.build_mode }}
+      image_tag: ${{ inputs.image_tag }}
+      registryUrl: ${{ secrets.HARBOR_IP }}
+      registryUsername: ${{ secrets.HARBOR_USER }}
+      registryPassword: ${{ secrets.HARBOR_TOKEN }}
+    secrets: inherit
+
