@@ -1,26 +1,7 @@
 name: Build worker-scheduler chart
 
-on:
-  workflow_dispatch:
-    inputs:
-      deployment_branch:
-        description: 'Deployment branch'
-        required: true
-        default: 'main'
-      build_mode:
-        type: choice
-        description: Build mode
-        options:
-        - dev
-        - stable
-      image_tag:
-        description: 'Image tag'
-        required: true
-        default: 'latest'
-  workflow_run:
-    workflows:
-    - ecmwf-projects/cads-build-farm/helm-chart.yaml
-    types: [requested]
+on: []
+
 
 
 jobs:
