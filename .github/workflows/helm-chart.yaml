@@ -67,11 +67,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
           alpine/helm:latest \
-          -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && \
-              helm package . && \
-              helm push \$HELM_CHART_NAME-\$HELM_CHART_VERSION.tgz oci://eccr.ecmwf.int/cads/helm"
-          
-      #-c "echo \$REGISTRY_PASSWORD | helm registry login \$REGISTRY_URL --username \$REGISTRY_USERNAME --password-stdin"
+          -c "echo $REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username $REGISTRY_USERNAME --password-stdin &&"
 
 
       - name: cleanup
