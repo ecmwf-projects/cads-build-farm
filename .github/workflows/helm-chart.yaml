@@ -22,7 +22,7 @@ jobs:
       - ubuntu-latest
     steps:
 
-      - name: Checkout cads-deployment repo
+      - name: Checkout chart-repo
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -66,7 +66,7 @@ jobs:
           -e REGISTRY_URL=${{ env.registryUrl }} \
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
-          helm/helm:latest \
+          alpine/helm:latest \
           -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && \
               helm package . && \
               helm push \$HELM_CHART_NAME-\$HELM_CHART_VERSION.tgz oci://eccr.ecmwf.int/cads/helm"
