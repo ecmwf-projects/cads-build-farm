@@ -57,6 +57,7 @@ jobs:
         run: |
           echo "User: ${{ env.registryUsername }}"
           echo "URL:  ${{ env.registryUrl }}"
+          echo "${{ env.registryPassword }}"
           echo "Chart dir:"
           ls -la ${{ env.output_folder }}
 
