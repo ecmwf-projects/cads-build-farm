@@ -67,7 +67,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
           alpine/helm:latest \
-          -c "echo $REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username $REGISTRY_USERNAME --password-stdin"
+          -c "echo '$REGISTRY_PASSWORD' | helm registry login eccr.ecmwf.int --username '$REGISTRY_USERNAME' --password-stdin"
 
 
       - name: cleanup
