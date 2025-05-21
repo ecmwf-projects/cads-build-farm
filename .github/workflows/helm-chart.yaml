@@ -52,6 +52,8 @@ jobs:
           echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
           echo output-folder=$output_folder >> $GITHUB_ENV
 
+          echo "HELM_CHART_NAME
+          echo "HELM_CHART_VERSION
 
       - name: helm build and push
         shell: bash
