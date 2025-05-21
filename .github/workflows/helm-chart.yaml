@@ -43,7 +43,6 @@ jobs:
           cp values.yaml $output_folder 2> /dev/null
           cp README.md $output_folder 2> /dev/null
           cp -R templates $output_folder 2> /dev/null
-          cd ./helmchart/worker-schedulers
 
           chartName=$(awk '/^name:/{print $2}' Chart.yaml)
           chartVersion=$(awk '/^version:/{print $2}' Chart.yaml)
