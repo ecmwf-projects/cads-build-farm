@@ -1,55 +1,62 @@
 name: 'Helm build tag and push'
 description: 'Package an Helm Chart and push on a container registry'
 
-inputs:
-  - name: helmFolder
-    type: string
-    default: ""
-  - name: registryUrl
-    type: string
-    default: ""
-  - name: registryUsername
-    type: string
-    default: ""
-  - name: registryPassword
-    type: string
-    default: ""
+on:
+  workflow_call:
+    inputs:
+      helmFolder:
+        type: string
+        default: ""
+        required: true
+      registryUrl:
+        type: string
+        default: ""
+        required: true
+      registryUsername:
+        type: string
+        default: ""
+        required: true
+      registryPassword:
+        type: string
+        default: ""
+        required: true
 
-runs:
-  using: 'composite'
-  runs-on: ubuntu-latest
-  steps:
+jobs:
+  building-helm-chart:
+    runs-on:
+      - ubuntu-latest
+    steps:
 
-    - name: Checkout cads-deployment repo
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout cads-deployment repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Login to harbor registry
-      uses: docker/login-action@v2
-      with:
-        registry: ${{ secrets.HARBOR_IP }}
-        username: ${{ secrets.HARBOR_USER }}
-        password: ${{ secrets.HARBOR_TOKEN }}
+      - name: Login to harbor registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ secrets.HARBOR_IP }}
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_TOKEN }}
 
-    - name: Set Helm Chart Variables
-      shell: bash
-      id: set_vars
-      run: |
-        cd ./helmchart/worker-schedulers
-        chartName=$(awk '/^name:/{print $2}' Chart.yaml)
-        chartVersion=$(awk '/^version:/{print $2}' Chart.yaml)
+      - name: Set Helm Chart Variables
+        shell: bash
+        id: set_vars
+        run: |
+          cd ./helmchart/worker-schedulers
+          chartName=$(awk '/^name:/{print $2}' Chart.yaml)
+          chartVersion=$(awk '/^version:/{print $2}' Chart.yaml)
 
-        echo "HELM_CHART_NAME=$chartName" >> $GITHUB_ENV
-        echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
-      working-directory: ${{ inputs.helmFolder }}
+          echo "HELM_CHART_NAME=$chartName" >> $GITHUB_ENV
+          echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
+        working-directory: ${{ inputs.helmFolder }}
 
-    - name: helm build and push
-      shell: bash
-      run: |
-        docker run \
-        --rm \
-        --entrypoint=sh \
-        -v $(pwd)/${{ inputs.helmFolder }}:/work \
-        -w /work alpine/helm \
-        -c "helm registry login ${{ inputs.registryUrl }} --username ${{ inputs.registryUsername }} --password ${{ inputs.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ inputs.registryUrl }}/cads"
+      - name: helm build and push
+        shell: bash
+        run: |
+          docker run \
+          --rm \
+          --entrypoint=sh \
+          -v $(pwd)/${{ inputs.helmFolder }}:/work \
+          -w /work alpine/helm \
+          -c "helm registry login ${{ inputs.registryUrl }} --username ${{ inputs.registryUsername }} --password ${{ inputs.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ inputs.registryUrl }}/cads"
