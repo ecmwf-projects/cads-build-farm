@@ -21,6 +21,11 @@ on:
         default: ""
         required: true
 
+# env:
+#     registryUrl: ${{ secrets.HARBOR_IP }}
+#     registryUsername: ${{ secrets.HARBOR_USER }}
+#     registryPassword: ${{ secrets.HARBOR_TOKEN }}
+
 jobs:
   building-helm-chart:
     runs-on:
