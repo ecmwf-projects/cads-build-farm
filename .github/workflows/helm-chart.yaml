@@ -59,10 +59,11 @@ jobs:
           --rm \
           --entrypoint=sh \
           -v $(pwd)/${{ env.output_folder }}:/work \
-          -w /work alpine/helm \
+          -w /work \
           -e REGISTRY_URL=${{ env.registryUrl }} \
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
+          alpine/helm \
           -c "helm registry login ${REGISTRY_URL}/cads --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}"
 
       - name: cleanup
