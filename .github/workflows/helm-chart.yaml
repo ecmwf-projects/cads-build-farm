@@ -64,7 +64,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
           alpine/helm \
-          -c "helm registry login ${REGISTRY_URL}/cads --username ${REGISTRY_USERNAME} --password ${REGISTRY_PASSWORD}"
+          -c "helm registry login $REGISTRY_URL/cads --username $REGISTRY_USERNAME}--password $REGISTRY_PASSWORD"
 
       - name: cleanup
         shell: bash
