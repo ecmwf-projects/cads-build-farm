@@ -22,9 +22,10 @@ on:
       #   required: true
 
 env:
-    registryUrl: ${{ secrets.HARBOR_IP }}
-    registryUsername: ${{ secrets.HARBOR_USER }}
-    registryPassword: ${{ secrets.HARBOR_TOKEN }}
+    registryUrl: https://eccr.ecmwf.int/chartrepo/polytope
+    registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
+    registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
+
 
 jobs:
   building-helm-chart:
