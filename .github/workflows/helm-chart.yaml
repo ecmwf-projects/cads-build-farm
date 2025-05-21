@@ -17,15 +17,13 @@ inputs:
 
 runs:
   using: 'composite'
+  runs-on: ubuntu-latest
   steps:
 
     - name: Checkout cads-deployment repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
-        repository: ecmwf-projects/cads-deployment
-        ref: ${{ inputs.deployment_branch }}
-        token: ${{ secrets.CADS_PAT }}
-        path: .
+        fetch-depth: 0
 
     - name: Login to harbor registry
       uses: docker/login-action@v2
