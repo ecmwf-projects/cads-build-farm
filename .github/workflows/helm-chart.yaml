@@ -60,7 +60,7 @@ jobs:
           --entrypoint=sh \
           -v $(pwd)/${{ steps.set_vars.outputs.output-folder }}:/work \
           -w /work alpine/helm \
-          -c "helm registry login https://${{ env.helmRegustryUrl }}/cads --username ${{ env.registryUsername }} --password ${{ env.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ env.helmRegustryUrl }}/cads"
+          -c "helm registry login https://${{ env.helmRegustryUrl }}/cads --username ${{ env.registryUsername }} --password ${{ env.registryPassword }}"
 
       - name: cleanup
         shell: bash
