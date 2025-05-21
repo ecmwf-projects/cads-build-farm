@@ -41,9 +41,9 @@ jobs:
       - name: Login to harbor registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.HARBOR_IP }}
-          username: ${{ secrets.HARBOR_USER }}
-          password: ${{ secrets.HARBOR_TOKEN }}
+          registry: ${{ env.registryUrl }}
+          username: ${{ env.registryUsername }}
+          password: ${{ env.registryPassword }}
 
       - name: Set Helm Chart Variables
         shell: bash
