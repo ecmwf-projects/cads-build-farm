@@ -20,6 +20,11 @@ on:
       #   type: string
       #   default: ""
       #   required: true
+    secrets:
+      ECMWF_DOCKER_REGISTRY_USERNAME:
+        required: true
+      ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN:
+        required: true
 
 env:
     registryUrl: https://eccr.ecmwf.int/chartrepo/polytope
