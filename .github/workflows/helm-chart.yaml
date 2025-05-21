@@ -63,7 +63,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }} \
           -e REGISTRY_PASSWORD=${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }} \
           alpine/helm:latest \
-          -c "helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password \$REGISTRY_PASSWORD"
+          -c "echo \$REGISTRY_PASSWORD | echo \$REGISTRY_USERNAME; echo \$REGISTRY_PASSWORD; helm registry login https://eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin"
 
 
       - name: cleanup
