@@ -52,28 +52,25 @@ jobs:
           echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
           echo output-folder=$output_folder >> $GITHUB_ENV
 
-      - name: debug vars
+
+      - name: helm build and push
         shell: bash
         run: |
-          echo "User: ${{ env.registryUsername }}"
-          echo "URL:  ${{ env.registryUrl }}"
-          echo "${{ env.registryPassword }}"
-          echo "Chart dir:"
-          ls -la ${{ env.output_folder }}
+          docker run \
+          --rm \
+          --entrypoint=sh \
+          -v $(pwd)/${{ env.output_folder }}:/work \
+          -w /work \
+          -e REGISTRY_URL=${{ env.registryUrl }} \
+          -e REGISTRY_USERNAME=${{ env.registryUsername }} \
+          -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
+          alpine/helm \
+          -c "helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://$EGISTRY_URL/chartrepo"
+          
+      #-c "echo \$REGISTRY_PASSWORD | helm registry login \$REGISTRY_URL --username \$REGISTRY_USERNAME --password-stdin"
 
-      # - name: helm build and push
-      #   shell: bash
-      #   run: |
-      #     docker run \
-      #     --rm \
-      #     --entrypoint=sh \
-      #     -v $(pwd)/${{ env.output_folder }}:/work \
-      #     -w /work \
-      #     -e REGISTRY_URL=${{ env.registryUrl }} \
-      #     -e REGISTRY_USERNAME=${{ env.registryUsername }} \
-      #     -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
-      #     alpine/helm \
-      #     -c "echo \$REGISTRY_PASSWORD | helm registry login \$REGISTRY_URL --username \$REGISTRY_USERNAME --password-stdin"
+
+
 
       - name: cleanup
         shell: bash
