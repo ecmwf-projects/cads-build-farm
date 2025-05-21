@@ -3,23 +3,6 @@ description: 'Package an Helm Chart and push on a container registry'
 
 on:
   workflow_call:
-    inputs:
-      helmFolder:
-        type: string
-        default: ""
-        required: true
-      # registryUrl:
-      #   type: string
-      #   default: ""
-      #   required: true
-      # registryUsername:
-      #   type: string
-      #   default: ""
-      #   required: true
-      # registryPassword:
-      #   type: string
-      #   default: ""
-      #   required: true
     secrets:
       ECMWF_DOCKER_REGISTRY_USERNAME:
         required: true
@@ -54,20 +37,32 @@ jobs:
         shell: bash
         id: set_vars
         run: |
+          output_folder=_output
+          mkdir -p _output
+          cp Chart.yaml $output_folder 2> /dev/null
+          cp values.yaml $output_folder 2> /dev/null
+          cp README.md $output_folder 2> /dev/null
+          cp -R templates $output_folder 2> /dev/null
           cd ./helmchart/worker-schedulers
+
           chartName=$(awk '/^name:/{print $2}' Chart.yaml)
           chartVersion=$(awk '/^version:/{print $2}' Chart.yaml)
 
           echo "HELM_CHART_NAME=$chartName" >> $GITHUB_ENV
           echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
-        working-directory: ${{ inputs.helmFolder }}
+          echo output-folder=$output_folder >> $GITHUB_ENV
 
-      - name: helm build and push
-        shell: bash
-        run: |
-          docker run \
-          --rm \
-          --entrypoint=sh \
-          -v $(pwd)/${{ inputs.helmFolder }}:/work \
-          -w /work alpine/helm \
-          -c "helm registry login ${{ inputs.registryUrl }} --username ${{ inputs.registryUsername }} --password ${{ inputs.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ inputs.registryUrl }}/cads"
+      # - name: helm build and push
+      #   shell: bash
+      #   run: |
+      #     docker run \
+      #     --rm \
+      #     --entrypoint=sh \
+      #     -v $(pwd)/${{ steps.set_vars.outputs.output-folder }}:/work \
+      #     -w /work alpine/helm \
+      #     -c "helm registry login ${{ inputs.registryUrl }} --username ${{ inputs.registryUsername }} --password ${{ inputs.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ inputs.registryUrl }}/cads"
+
+      # - name: cleanup
+      #   shell: bash
+      #   run: | 
+      #     rm -rf ${{ steps.set_vars.outputs.output-folder }}
