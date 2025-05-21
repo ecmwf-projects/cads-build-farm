@@ -8,18 +8,18 @@ on:
         type: string
         default: ""
         required: true
-      registryUrl:
-        type: string
-        default: ""
-        required: true
-      registryUsername:
-        type: string
-        default: ""
-        required: true
-      registryPassword:
-        type: string
-        default: ""
-        required: true
+      # registryUrl:
+      #   type: string
+      #   default: ""
+      #   required: true
+      # registryUsername:
+      #   type: string
+      #   default: ""
+      #   required: true
+      # registryPassword:
+      #   type: string
+      #   default: ""
+      #   required: true
 
 # env:
 #     registryUrl: ${{ secrets.HARBOR_IP }}
@@ -40,9 +40,9 @@ jobs:
       - name: Login to harbor registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.HARBOR_IP }}
-          username: ${{ secrets.HARBOR_USER }}
-          password: ${{ secrets.HARBOR_TOKEN }}
+          registryUrl: ${{ secrets.HARBOR_IP }}
+          registryUsername: ${{ secrets.HARBOR_USER }}
+          registryPassword: ${{ secrets.HARBOR_TOKEN }}
 
       - name: Set Helm Chart Variables
         shell: bash
