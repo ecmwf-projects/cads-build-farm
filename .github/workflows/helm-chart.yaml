@@ -10,7 +10,7 @@ on:
         required: true
 
 env:
-    registryUrl: https://eccr.ecmwf.int/chartrepo/polytope
+    registryUrl: https://eccr.ecmwf.int
     helmRegustryUrl: eccr.ecmwf.int
     registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
     registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
