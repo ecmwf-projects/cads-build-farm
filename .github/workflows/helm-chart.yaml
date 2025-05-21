@@ -65,7 +65,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
           alpine/helm \
-          -c "helm package . && helm push /work/$HELM_CHART_NAME-$HELM_CHART_VERSION.tgz oci://$EGISTRY_URL/chartrepo"
+          -c "helm package . && helm push /work/$HELM_CHART_NAME-$HELM_CHART_VERSION.tgz oci://$REGISTRY_URL/chartrepo"
           
       #-c "echo \$REGISTRY_PASSWORD | helm registry login \$REGISTRY_URL --username \$REGISTRY_USERNAME --password-stdin"
 
