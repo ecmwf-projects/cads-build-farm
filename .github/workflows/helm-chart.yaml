@@ -67,7 +67,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ env.registryUsername }} \
           -e REGISTRY_PASSWORD=${{ env.registryPassword }} \
           alpine/helm \
-          -c "helm package . && helm push /work/$HELM_CHART_NAME-$HELM_CHART_VERSION.tgz oci://eccr.ecmwf.int/chartrepo"
+          -c "helm repo add retrieve-api https://eccr.ecmwf.int/chartrepo/cads --username '$REGISTRY_USERNAME' --password '$REGISTRY_PASSWORD && helm package . && helm push /work/$HELM_CHART_NAME-$HELM_CHART_VERSION.tgz oci://eccr.ecmwf.int/chartrepo/cads"
           
       #-c "echo \$REGISTRY_PASSWORD | helm registry login \$REGISTRY_URL --username \$REGISTRY_USERNAME --password-stdin"
 
