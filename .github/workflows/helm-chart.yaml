@@ -11,6 +11,7 @@ on:
 
 env:
     registryUrl: https://eccr.ecmwf.int/chartrepo/polytope
+    helmRegustryUrl: eccr.ecmwf.int/
     registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
     registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
 
@@ -59,7 +60,7 @@ jobs:
           --entrypoint=sh \
           -v $(pwd)/${{ steps.set_vars.outputs.output-folder }}:/work \
           -w /work alpine/helm \
-          -c "helm registry login ${{ env.registryUrl }} --username ${{ env.registryUsername }} --password ${{ env.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ env.registryUrl }}/cads"
+          -c "helm registry login ${{ env.registryUrl }} --username ${{ env.registryUsername }} --password ${{ env.registryPassword }} && helm package . && helm push /work/$ELM_CHART_NAME-ELM_CHART_VERSION.tgz oci://${{ env.helmRegustryUrl }}/cads"
 
       - name: cleanup
         shell: bash
