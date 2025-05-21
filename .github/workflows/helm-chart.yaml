@@ -58,9 +58,9 @@ jobs:
           docker run \
           --rm \
           --entrypoint=sh \
-          -v $(pwd)/${{ steps.set_vars.outputs.output-folder }}:/work \
+          -v $(pwd)/$output_folder:/work \
           -w /work alpine/helm \
-          -c "helm registry login ${{ env.registryUrl }}/cads --username ${{ env.registryUsername }} --password ${{ env.registryPassword }}"
+          -c "helm registry login ${registryUrl}/cads --username ${registryUsername} --password ${registryPassword}"
 
       - name: cleanup
         shell: bash
