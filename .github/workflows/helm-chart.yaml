@@ -52,8 +52,8 @@ jobs:
           echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
           echo output-folder=$output_folder >> $GITHUB_ENV
 
-          echo "HELM_CHART_NAME"
-          echo "HELM_CHART_VERSION"
+          echo $HELM_CHART_NAME
+          echo $HELM_CHART_VERSION
 
       - name: helm build and push
         shell: bash
@@ -66,7 +66,7 @@ jobs:
           -e REGISTRY_USERNAME=${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }} \
           -e REGISTRY_PASSWORD=${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }} \
           alpine/helm:latest \
-          -c "printenv"
+          -c "echo $REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username $REGISTRY_USERNAME --password-stdin"
 
 
       - name: cleanup
