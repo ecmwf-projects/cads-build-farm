@@ -60,8 +60,8 @@ jobs:
           --entrypoint=sh \
           -v $(pwd)/${{ env.output_folder }}:/work \
           -w /work \
-          -e REGISTRY_USERNAME=${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }} \
-          -e REGISTRY_PASSWORD=${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }} \
+          -e REGISTRY_USERNAME='${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}' \
+          -e REGISTRY_PASSWORD='${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}' \
           alpine/helm \
           -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin"
 
