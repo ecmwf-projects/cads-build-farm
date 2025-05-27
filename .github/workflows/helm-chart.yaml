@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: compute semantic version
-        uses: ./git-version.yml
+        uses: ./actions/git-version.yml
         id: version
 
       # - name: Login to harbor registry
