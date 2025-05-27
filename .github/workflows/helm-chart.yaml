@@ -27,12 +27,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Login to harbor registry
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.registryUrl }}
-          username: ${{ env.registryUsername }}
-          password: ${{ env.registryPassword }}
+      - name: compute semantic version
+        uses: ./git-version.yml
+        id: version
+
+      # - name: Login to harbor registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ${{ env.registryUrl }}
+      #     username: ${{ env.registryUsername }}
+      #     password: ${{ env.registryPassword }}
+      - name: replace chart version
+        shell: bash
+        run: |
+          sed -i "s/version: .*/version: ${{ steps.version.outputs.version}}/g" Chart.yaml
+          cat Chart.yaml
 
       - name: Set Helm Chart Variables
         shell: bash
