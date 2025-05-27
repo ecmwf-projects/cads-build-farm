@@ -20,7 +20,6 @@ jobs:
   building-helm-chart:
     runs-on:
       - ubuntu-latest
-    using: "composite"
     steps:
 
       - name: Checkout chart-repo

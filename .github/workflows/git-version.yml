@@ -19,7 +19,7 @@ runs:
   using: "composite"
   steps:
     - name: setup dotnet
-      uses: actions/setup-dotnet@v4
+      uses: setup-dotnet@v4
       env:
         DOTNET_INSTALL_DIR: "~/.dotnet"
       with:
