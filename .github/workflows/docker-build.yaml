@@ -9,9 +9,9 @@ on:
         type: string
     secrets:
       ECMWF_DOCKER_REGISTRY_USERNAME:
-        required: true
+        required: false
       ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN:
-        required: true
+        required: false
 
 env:
     registryUrl: https://eccr.ecmwf.int
