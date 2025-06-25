@@ -1,5 +1,5 @@
-name: 'Helm build tag and push'
-description: 'Package an Helm Chart and push on a container registry'
+name: 'Docker build tag and push'
+description: 'Docker build tag and push on a container registry'
 
 on:
   workflow_call:
