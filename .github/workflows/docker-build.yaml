@@ -58,8 +58,9 @@ jobs:
 
       - name: Dockerfile build tag and push
         uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
-        registry: ${{ env.registryUrl }}
-        dockerfile: ${{ inputs.dockerfile }}
-        base-image-tag: ${{ steps.version.outputs.version }}
-        base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
-        image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
+        with:
+          registry: ${{ env.registryUrl }}
+          dockerfile: ${{ inputs.dockerfile }}
+          base-image-tag: ${{ steps.version.outputs.version }}
+          base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
+          image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
