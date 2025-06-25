@@ -21,7 +21,7 @@ env:
 
 
 jobs:
-  building-helm-chart:
+  building-docker-image:
     runs-on:
       - ubuntu-latest
     steps:
