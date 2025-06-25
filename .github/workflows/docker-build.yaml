@@ -15,9 +15,8 @@ on:
 
 env:
     registryUrl: https://eccr.ecmwf.int
-    helmRegustryUrl: eccr.ecmwf.int
-    registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
-    registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
+    registryUsername: ${{ secrets.HARBOR_USER }}
+    registryPassword: ${{ secrets.HARBOR_TOKEN }}
 
 
 jobs:
