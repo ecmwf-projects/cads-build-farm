@@ -1,0 +1,65 @@
+name: 'Helm build tag and push'
+description: 'Package an Helm Chart and push on a container registry'
+
+on:
+  workflow_call:
+    inputs:
+      dockerfile:
+        required: true
+        type: string
+    secrets:
+      ECMWF_DOCKER_REGISTRY_USERNAME:
+        required: true
+      ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN:
+        required: true
+
+env:
+    registryUrl: https://eccr.ecmwf.int
+    helmRegustryUrl: eccr.ecmwf.int
+    registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
+    registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
+
+
+jobs:
+  building-helm-chart:
+    runs-on:
+      - ubuntu-latest
+    steps:
+
+      - name: Checkout code-repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout cads-build-farm (full)
+        uses: actions/checkout@v4
+        with:
+          repository: ecmwf-projects/cads-build-farm
+          path: cads-build-farm
+          ref: helm-chart-pipeline
+
+      - name: Copy all shared scripts to root
+        run: cp cads-build-farm/scripts/* ./
+
+      - name: compute semantic version
+        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@helm-chart-pipeline
+        id: version
+
+      - name: Login to harbor registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.registryUrl }}
+          username: ${{ env.registryUsername }}
+          password: ${{ env.registryPassword }}
+
+
+      - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@helm-chart-pipeline
+        id: image-variables
+
+      - name: Dockerfile build tag and push
+        uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
+        registry: ${{ env.registryUrl }}
+        dockerfile: ${{ inputs.dockerfile }}
+        base-image-tag: ${{ steps.version.outputs.version }}
+        base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
+        image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}

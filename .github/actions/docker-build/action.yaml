@@ -1,0 +1,35 @@
+name: 'Build a Dockerfile'
+description: 'Build tag and push'
+
+
+
+inputs:
+  dockerfile:
+    description: 'The dockerfile to be built'
+    required: true
+  base-image-name:
+    required: false
+  base-image-tag:
+    required: false
+  image-name:
+    required: true
+  registry:
+    required: true
+
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: docker build
+      shell: bash
+      run: |
+        docker build . \
+          -t ${{ inputs.image-name }} \
+          -f ${{ inputs.dockerfile }}
+    - name: docker tag and push
+      shell: bash
+      run: |
+        image_and_version=${{ inputs.image-name }}:${{ inputs.version }}
+        docker tag $image_and_version ${{ inputs.registry }}/$image_and_version
+        docker push ${{ inputs.registry }}/$image_and_version
