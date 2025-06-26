@@ -44,10 +44,6 @@ jobs:
           echo "HARBOR_USER is set? -> ${{ secrets.HARBOR_USER != '' }}"
           echo "HARBOR_TOKEN is set? -> ${{ secrets.HARBOR_TOKEN != '' }}"
 
-      - name: Debug - Check if secrets are set (caller)
-        run: |
-          echo "::add-mask::${{ secrets.HARBOR_USER }}"
-          echo "::add-mask::${{ secrets.HARBOR_TOKEN }}"
 
 
 
@@ -70,3 +66,4 @@ jobs:
           base-image-tag: ${{ steps.version.outputs.version }}
           base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
           image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
+

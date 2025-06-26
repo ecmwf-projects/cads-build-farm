@@ -21,4 +21,6 @@ runs:
         build_image_name=${sanitizedRepoName}-build
 
         echo build-image-name=$build_image_name >> $GITHUB_OUTPUT
+        echo build-image-name=$build_image_name >> $GITHUB_ENV
         echo image-name=$sanitizedRepoName >> $GITHUB_OUTPUT
+        echo image-name=$sanitizedRepoName >> $GITHUB_ENV
