@@ -10,7 +10,7 @@ inputs:
 outputs:
   version:
     description: "The version determined by GitVersion"
-    value: ${{ steps.version_step.outputs.fullSemVer }}
+    value: ${{ steps.version_step.outputs.GitVersion_SemVer }}
   is-stable:
     description: "Whether the version is stable"
     value: ${{ steps.version_step.outputs.is-stable }}
@@ -65,10 +65,10 @@ runs:
         is_stable=false
         if [[ "${{ steps.version_step.outputs.preReleaseTag }}" == "" ]]; then
           is_stable=true
-          echo "version ${{ steps.version_step.outputs.fullSemVer }} is stable"
+          echo "version ${{ steps.version_step.outputs.GitVersion_SemVer }} is stable"
         else
           is_stable=false
-          echo "version ${{ steps.version_step.outputs.fullSemVer }} is not stable"
+          echo "version ${{ steps.version_step.outputs.GitVersion_SemVer }} is not stable"
         fi
         
         echo "is-stable=$is_stable" >> $GITHUB_OUTPUT
