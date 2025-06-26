@@ -14,6 +14,11 @@ on:
         required: true
       HARBOR_IP:
         required: true
+
+
+env:
+    registryUrl: https://eccr.ecmwf.int
+
 jobs:
   building-docker-image:
     runs-on:
@@ -58,7 +63,7 @@ jobs:
       - name: Dockerfile build tag and push
         uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
         with:
-          registry: ${{ secrets.HARBOR_IP }}
+          registry: ${{ env.registryUrl }}
           dockerfile: ${{ inputs.dockerfile }}
           base-image-tag: ${{ steps.version.outputs.version }}
           base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
