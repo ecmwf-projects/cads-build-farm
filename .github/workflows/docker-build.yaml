@@ -38,6 +38,13 @@ jobs:
           echo "HARBOR_USER is set? -> ${{ secrets.HARBOR_USER != '' }}"
           echo "HARBOR_TOKEN is set? -> ${{ secrets.HARBOR_TOKEN != '' }}"
 
+      - name: Debug - Check if secrets are set (caller)
+        run: |
+          echo "::add-mask::${{ secrets.HARBOR_USER }}"
+          echo "::add-mask::${{ secrets.HARBOR_TOKEN }}"
+
+
+
       - name: Login to harbor registry
         uses: docker/login-action@v2
         with:
@@ -52,7 +59,7 @@ jobs:
       - name: Dockerfile build tag and push
         uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
         with:
-          registry: ${{ env.registryUrl }}
+          registry: ${{ secrets.HARBOR_IP }}
           dockerfile: ${{ inputs.dockerfile }}
           base-image-tag: ${{ steps.version.outputs.version }}
           base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
