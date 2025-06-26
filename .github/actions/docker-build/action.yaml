@@ -27,9 +27,10 @@ runs:
         docker build . \
           -t ${{ inputs.image-tag }} \
           -f ${{ inputs.dockerfile }}
-    # - name: docker tag and push
-    #   shell: bash
-    #   run: |
-    #     image_and_version=${{ inputs.image-name }}:${{ inputs.version }}
-    #     docker tag $image_and_version ${{ inputs.registry }}/$image_and_version
-    #     docker push ${{ inputs.registry }}/$image_and_version
+    - name: docker tag and push
+      shell: bash
+      run: |
+        image_and_version=${{ inputs.image-name }}:${{ inputs.version }}
+        echo $image_and_version
+        docker tag ${{ inputs.image-tag }} ${{ inputs.registry }}/${{ inputs.image-tag }}
+        docker push ${{ inputs.registry }}/${{ inputs.image-tag }}
