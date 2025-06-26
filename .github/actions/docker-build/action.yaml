@@ -31,5 +31,5 @@ runs:
       shell: bash
       run: |
         image_and_version=${{ inputs.image-name }}:${{ inputs.version }}
-        docker tag ${{ inputs.image-tag }} ${{ inputs.registry }}/${{ inputs.image-tag }}
-        docker push ${{ inputs.registry }}/${{ inputs.image-tag }}
+        docker tag $image_and_version ${{ inputs.registry }}/$image_and_version
+        docker push ${{ inputs.registry }}/$image_and_version
