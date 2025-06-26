@@ -7,7 +7,13 @@ on:
       dockerfile:
         required: true
         type: string
-
+    secrets:
+      HARBOR_USER:
+        required: true
+      HARBOR_TOKEN:
+        required: true
+      HARBOR_IP:
+        required: true
 jobs:
   building-docker-image:
     runs-on:
