@@ -9,11 +9,11 @@ on:
         type: string
     secrets:
       HARBOR_USER:
-        required: true
+        required: false
       HARBOR_TOKEN:
-        required: true
+        required: false
       HARBOR_IP:
-        required: true
+        required: false
 
 jobs:
   building-docker-image:
