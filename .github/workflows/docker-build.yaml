@@ -8,13 +8,12 @@ on:
         required: true
         type: string
     secrets:
-      ECMWF_DOCKER_REGISTRY_USERNAME:
+      HARBOR_USER:
         required: true
-      ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN:
+      HARBOR_TOKEN:
         required: true
-
-env:
-    registryUrl: https://eccr.ecmwf.int
+      HARBOR_IP:
+        required: true
 
 jobs:
   building-docker-image:
@@ -43,15 +42,15 @@ jobs:
 
       - name: Debug registry secrets
         run: |
-          echo "USERNAME is set? -> ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME != '' }}"
-          echo "PASSWORD is set? -> ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN != '' }}"
+          echo "USERNAME is set? -> ${{ secrets.HARBOR_USER != '' }}"
+          echo "PASSWORD is set? -> ${{ secrets.HARBOR_TOKEN != '' }}"
 
       - name: Login to harbor registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ env.registryUrl }}
-          username: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
-          password: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
+          registry: ${{ secrets.HARBOR_IP }}
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_TOKEN }}
 
 
       - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@helm-chart-pipeline
