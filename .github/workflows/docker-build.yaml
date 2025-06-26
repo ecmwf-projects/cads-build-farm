@@ -54,7 +54,7 @@ jobs:
         run: |
           echo "build-image-name: ${{ steps.image-variables.outputs.build-image-name }}"
           echo "image-name: ${{ steps.image-variables.outputs.image-name }}"
-          echoi "version ${{ steps.version.outputs.version }}"
+          echo "version ${{ steps.version.outputs.version }}"
       - name: Dockerfile build tag and push
         uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
         with:
