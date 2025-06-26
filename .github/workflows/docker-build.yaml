@@ -17,7 +17,7 @@ on:
 
 
 env:
-    registryUrl: https://eccr.ecmwf.int
+  registryUrl: eccr.ecmwf.int
 
 jobs:
   building-docker-image:
