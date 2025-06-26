@@ -15,6 +15,10 @@ inputs:
     required: true
   registry:
     required: true
+  image-name:
+    required: true
+  version:
+    required: true
 
 
 

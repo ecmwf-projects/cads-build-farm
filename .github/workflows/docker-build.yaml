@@ -66,4 +66,6 @@ jobs:
           base-image-tag: ${{ steps.version.outputs.version }}
           base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
           image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
+          image-name: ${{ steps.image-variables.outputs.image-name }}
+          version: ${{ steps.version.outputs.version }}
 
