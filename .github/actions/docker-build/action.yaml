@@ -11,7 +11,7 @@ inputs:
     required: false
   base-image-tag:
     required: false
-  image-name:
+  image-tag:
     required: true
   registry:
     required: true
@@ -25,7 +25,7 @@ runs:
       shell: bash
       run: |
         docker build . \
-          -t ${{ inputs.image-name }} \
+          -t ${{ inputs.image-tag }} \
           -f ${{ inputs.dockerfile }}
     # - name: docker tag and push
     #   shell: bash
