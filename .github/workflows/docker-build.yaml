@@ -48,8 +48,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: '${{ secrets.HARBOR_IP }}'
-          username: ${{ secrets.HARBOR_USER }}
-          password: ${{ secrets.HARBOR_TOKEN }}
+          username: '${{ secrets.HARBOR_USER }}'
+          password: '${{ secrets.HARBOR_TOKEN }}'
 
 
       - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@helm-chart-pipeline
