@@ -7,13 +7,6 @@ on:
       dockerfile:
         required: true
         type: string
-    secrets:
-      HARBOR_USER:
-        required: false
-      HARBOR_TOKEN:
-        required: false
-      HARBOR_IP:
-        required: false
 
 jobs:
   building-docker-image:
@@ -42,8 +35,8 @@ jobs:
 
       - name: Debug registry secrets
         run: |
-          echo "USERNAME is set? -> ${{ secrets.HARBOR_USER != '' }}"
-          echo "PASSWORD is set? -> ${{ secrets.HARBOR_TOKEN != '' }}"
+          echo "HARBOR_USER is set? -> ${{ secrets.HARBOR_USER != '' }}"
+          echo "HARBOR_TOKEN is set? -> ${{ secrets.HARBOR_TOKEN != '' }}"
 
       - name: Login to harbor registry
         uses: docker/login-action@v2
