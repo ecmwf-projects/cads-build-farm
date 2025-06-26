@@ -15,9 +15,6 @@ on:
 
 env:
     registryUrl: https://eccr.ecmwf.int
-    registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
-    registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
-
 
 jobs:
   building-docker-image:
@@ -52,7 +49,7 @@ jobs:
       - name: Login to harbor registry
         uses: docker/login-action@v2
         with:
-          registry: https://eccr.ecmwf.int
+          registry: ${{ env.registryUrl }}
           username: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
           password: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
 
