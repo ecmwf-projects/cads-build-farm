@@ -17,7 +17,7 @@ runs:
       id: set-runtime-variables
       shell: bash
       run: |
-        sanitizedRepoName=$( echo $GITHUB_REPOSITORY | sed 's/\cads-//g')
+        sanitizedRepoName=$( echo $GITHUB_REPOSITORY | sed 's/\ecmwf-projects\/cads-//g')
         build_image_name=${sanitizedRepoName}-build
 
         echo build-image-name=$build_image_name >> $GITHUB_OUTPUT
