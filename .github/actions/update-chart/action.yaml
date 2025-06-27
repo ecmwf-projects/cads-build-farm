@@ -12,8 +12,6 @@ inputs:
 
 runs:
   using: "composite"
-  env:
-    BRANCH_NAME: automatic_update
   steps:
     - name: Checkout chart repo
       uses: actions/checkout@v4
@@ -26,12 +24,12 @@ runs:
       id: check_branch
       run: |
         git fetch origin
-        if git show-ref --verify --quiet refs/heads/${{ env.BRANCH_NAME }}; then
+        if git show-ref --verify --quiet refs/heads/automatic_update; then
           echo "Branch exists"
-          git checkout ${{ env.BRANCH_NAME }}
+          git checkout automatic_update
         else
           echo "Branch does not exist"
-          git checkout -b ${{ env.BRANCH_NAME }}
+          git checkout -b automatic_update
         fi
 
     - name: Update appVersion
@@ -47,7 +45,7 @@ runs:
 
     - name: Push changes
       run: |
-        git push origin ${{ env.BRANCH_NAME }} --force
+        git push origin automatic_update --force
 
     - name: Create or update pull request
       id: check_pr
@@ -57,7 +55,7 @@ runs:
           -H "Authorization: Bearer ${{ secrets.DSS_HELM_PAT }}" \
           https://api.github.com/repos/${{ inputs.chart-repo }}/pulls)
 
-        pr_number=$(echo "$response" | docker run --rm -i imega/jq '.[] | select(.head.ref=="${{ env.BRANCH_NAME }}" and .base.ref=="main") | .number')
+        pr_number=$(echo "$response" | docker run --rm -i imega/jq '.[] | select(.head.ref=="automatic_update" and .base.ref=="main") | .number')
 
         if [ -z "$pr_number" ]; then
           echo "No PR exists, creating a new one."
@@ -69,7 +67,7 @@ runs:
             -d '{
               "title": "Update appVersion",
               "body": "This PR updates the appVersion to '${{ inputs.app-version }}'.",
-              "head": "${{ env.BRANCH_NAME }}",
+              "head": "automatic_update",
               "base": "main"
             }'
         else
