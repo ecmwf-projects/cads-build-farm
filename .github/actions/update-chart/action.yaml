@@ -1,5 +1,6 @@
 name: "Update Helm Chart"
 description: "Update appVersion in Chart.yaml"
+
 inputs:
   chart-repo:
     description: "Repo containing the Helm chart"
@@ -8,11 +9,11 @@ inputs:
     description: "New appVersion to set"
     required: true
 
-
+    env:
+      BRANCH_NAME: automatic_update
 runs:
   using: "composite"
-  env:
-    BRANCH_NAME: automatic_update
+
   steps:
 
     - name: Checkout chart repo
