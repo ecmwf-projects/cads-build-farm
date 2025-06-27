@@ -81,6 +81,6 @@ runs:
             -H "Authorization: Bearer ${{ secrets.DSS_HELM_PAT }}" \
             https://api.github.com/repos/${{ inputs.chart-repo }}/pulls/$pr_number \
             -d '{
-              "body": "This PR updates the appVersion to '${{ inputs.app-version }}'.",
+              "body": "This PR updates the appVersion to '${{ inputs.app-version }}'."
             }'
         fi
