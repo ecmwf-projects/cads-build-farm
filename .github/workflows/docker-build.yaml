@@ -80,3 +80,4 @@ jobs:
         with:
           chart-repo: ${{ inputs.chart-repo }}
           app-version: ${{ steps.version.outputs.version }}
+          helm-pat: ${{ secrets.DSS_HELM_PAT }}
