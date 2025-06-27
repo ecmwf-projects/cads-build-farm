@@ -9,11 +9,11 @@ inputs:
     description: "New appVersion to set"
     required: true
 
-    env:
-      BRANCH_NAME: automatic_update
+
 runs:
   using: "composite"
-
+  env:
+    BRANCH_NAME: automatic_update
   steps:
 
     - name: Checkout chart repo
