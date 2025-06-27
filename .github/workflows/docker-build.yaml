@@ -7,7 +7,7 @@ on:
       dockerfile:
         required: true
         type: string
-      reference-chart:
+      chart-repo:
         required: true
         type: string
     secrets:
@@ -78,5 +78,5 @@ jobs:
       - name: Update HelmChart
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
         with:
-          chart-repo: ${{ inputs.reference-chart }}
+          chart-repo: ${{ inputs.chart-repo }}
           app-version: ${{ steps.version.outputs.version }}
