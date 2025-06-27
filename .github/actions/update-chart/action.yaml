@@ -22,6 +22,7 @@ runs:
 
     - name: Check for existing branch
       id: check_branch
+      shell: bash
       run: |
         git fetch origin
         if git show-ref --verify --quiet refs/heads/automatic_update; then
@@ -33,10 +34,12 @@ runs:
         fi
 
     - name: Update appVersion
+      shell: bash
       run: |
         sed -i -r "s/appVersion:(.*)/appVersion: ${{ inputs.app-version }}/g" Chart.yaml
 
     - name: Commit changes
+      shell: bash
       run: |
         git config --local user.email "${{ github.repository_owner }}@bopen.com"
         git config --local user.name "${{ github.repository_owner }}"
@@ -44,11 +47,13 @@ runs:
         git commit -m "Update appVersion to ${{ inputs.app-version }}"
 
     - name: Push changes
+      shell: bash
       run: |
         git push origin automatic_update --force
 
     - name: Create or update pull request
       id: check_pr
+      shell: bash
       run: |
         response=$(curl -s -H "Accept: application/vnd.github+json" \
           -H "X-GitHub-Api-Version: 2022-11-28" \
