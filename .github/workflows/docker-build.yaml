@@ -7,6 +7,9 @@ on:
       dockerfile:
         required: true
         type: string
+      reference-chart:
+        required: true
+        type: string
     secrets:
       HARBOR_USER:
         required: true
@@ -72,3 +75,8 @@ jobs:
           image-name: ${{ steps.image-variables.outputs.image-name }}
           version: ${{ steps.version.outputs.version }}
 
+      - name: Update HelmChart
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
+        with:
+          chart-repo: ${{ inputs.reference-chart }}
+          app-version: ${{ steps.version.outputs.version }}

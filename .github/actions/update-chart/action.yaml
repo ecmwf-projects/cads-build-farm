@@ -1,0 +1,85 @@
+name: "Update Helm Chart"
+description: "Update appVersion in Chart.yaml"
+inputs:
+  chart-repo:
+    description: "Repo containing the Helm chart"
+    required: true
+  app-version:
+    description: "New appVersion to set"
+    required: true
+
+
+runs:
+  using: "composite"
+  env:
+    BRANCH_NAME: automatic_update
+  steps:
+
+    - name: Checkout chart repo
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.chart-repo }}
+        token: ${{ secrets.DSS_HELM_PAT }}
+        ref: main
+
+    - name: Check for existing branch
+      id: check_branch
+      run: |
+        git fetch origin
+        if git show-ref --verify --quiet refs/heads/${{ env.BRANCH_NAME }}; then
+          echo "Branch exists"
+          git checkout ${{ env.BRANCH_NAME }}
+        else
+          echo "Branch does not exist"
+          git checkout -b ${{ env.BRANCH_NAME }}
+        fi
+
+    - name: Update appVersion
+      run: |
+        sed -i -r "s/appVersion:(.*)/appVersion: ${{ inputs.app-version }}/g" Chart.yaml
+
+    - name: Commit changes
+      run: |
+        git config --local user.email "${{ github.repository_owner }}@bopen.com"
+        git config --local user.name "${{ github.repository_owner }}"
+        git add Chart.yaml
+        git commit -m "Update appVersion to ${{ inputs.app-version }}"
+
+    - name: Push changes
+      run: |
+        git push origin ${{ env.BRANCH_NAME }} --force
+
+    - name: Create or update pull request
+      id: check_pr
+      run: |
+        response=$(curl -s -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          -H "Authorization: Bearer ${{ secrets.DSS_HELM_PAT }}" \
+          https://api.github.com/repos/${{ inputs.chart-repo }}/pulls)
+
+        pr_number=$(echo "$response" | docker run --rm -i imega/jq '.[] | select(.head.ref=="${{ env.BRANCH_NAME }}" and .base.ref=="main") | .number')
+
+        if [ -z "$pr_number" ]; then
+          echo "No PR exists, creating a new one."
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Authorization: Bearer ${{ secrets.DSS_HELM_PAT }}" \
+            https://api.github.com/repos/${{ inputs.chart-repo }}/pulls \
+            -d '{
+              "title": "Update appVersion",
+              "body": "This PR updates the appVersion to '${{ inputs.app-version }}'.",
+              "head": "${{ env.BRANCH_NAME }}",
+              "base": "main"
+            }'
+        else
+          echo "PR #$pr_number exists, updating it."
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Authorization: Bearer ${{ secrets.DSS_HELM_PAT }}" \
+            https://api.github.com/repos/${{ inputs.chart-repo }}/pulls/$pr_number \
+            -d '{
+              "body": "This PR updates the appVersion to '${{ inputs.app-version }}'.",
+            }'
+        fi
