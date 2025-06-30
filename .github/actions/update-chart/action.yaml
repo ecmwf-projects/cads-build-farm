@@ -46,7 +46,11 @@ runs:
         git config --local user.email "${{ github.repository_owner }}@bopen.com"
         git config --local user.name "${{ github.repository_owner }}"
         git add Chart.yaml
-        git commit -m "Update appVersion to ${{ inputs.app-version }}"
+        if git diff-index --quiet HEAD; then
+          echo "Nothing to commit, Chart.yaml is up-to-date."
+        else
+          git commit -m "Update appVersion to ${{ inputs.app-version }}"
+        fi
 
     - name: Push changes
       shell: bash
