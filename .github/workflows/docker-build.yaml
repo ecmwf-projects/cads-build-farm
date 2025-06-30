@@ -10,6 +10,9 @@ on:
       chart-repo:
         required: true
         type: string
+      repositories:
+        required: true
+        type: string
     secrets:
       HARBOR_USER:
         required: true
@@ -80,4 +83,10 @@ jobs:
         with:
           chart-repo: ${{ inputs.chart-repo }}
           app-version: ${{ steps.version.outputs.version }}
+          helm-pat: ${{ secrets.DSS_HELM_PAT }}
+
+      - name: Update Related Python Packages
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-packaget@helm-chart-pipeline
+        with:
+          repositories: ${{ inputs.repositories }}
           helm-pat: ${{ secrets.DSS_HELM_PAT }}

@@ -1,0 +1,72 @@
+name: "Update Releate Python Packages"
+description: "Update other python packages related to the build"
+
+inputs:
+  repositories:
+    description: "Comma-separated list of repos"
+    required: true
+  helm-pat:
+    description: "PAT token to access the repo"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Loop over repositories
+      shell: bash
+      run: |
+        IFS=$'\n' read -ra REPOS <<< "${{ inputs.repositories }}"
+        for REPO in "${REPOS[@]}"; do
+          echo "Updating $REPO"
+
+        git clone https://x-access-token:${{ inputs.helm-pat }}@github.com/$REPO temp-repo
+        cd temp-repo
+
+        # Checkout branch
+        git fetch origin
+        if git show-ref --verify --quiet refs/heads/automatic_package_update; then
+          echo "Branch exists"
+          git checkout automatic_package_update
+        else
+          echo "Branch does not exist"
+          git checkout -b automatic_package_update
+        fi
+
+        git config user.email "${{ github.repository_owner }}@bopen.com"
+        git config user.name "${{ github.repository_owner }}"
+        git add .
+        git commit -m "Automatic python package update from $GITHUB_REPOSITORY" || echo "Nothing to commit"
+        git push origin automatic_package_update --force
+
+        response=$(curl -s -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+          https://api.github.com/repos/$REPO/pulls)
+
+        pr_number=$(echo "$response" | jq '.[] | select(.head.ref=="automatic_package_update" and .base.ref=="main") | .number')
+
+        if [ -z "$pr_number" ]; then
+          echo "No PR exists, creating..."
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+            https://api.github.com/repos/$REPO/pulls \
+            -d '{
+              "title": "Automatic python package update",
+              "body": "This PR updates the python package for '$GITHUB_REPOSITORY'",
+              "head": "automatic_package_update",
+              "base": "main"
+            }'
+        else
+          echo "PR #$pr_number exists, updating body..."
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+            https://api.github.com/repos/$REPO/pulls/$pr_number \
+            -d '{
+              "body": "This PR updates the python package for '$GITHUB_REPOSITORY'"
+            }'
+        fi
+
+        cd ..
+        rm -rf temp-repo
+        done
