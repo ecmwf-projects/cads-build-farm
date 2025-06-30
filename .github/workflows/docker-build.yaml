@@ -86,7 +86,7 @@ jobs:
           helm-pat: ${{ secrets.DSS_HELM_PAT }}
 
       - name: Update Related Python Packages
-        uses: ecmwf-projects/cads-build-farm/.github/actions/update-packaget@helm-chart-pipeline
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@helm-chart-pipeline
         with:
           repositories: ${{ inputs.repositories }}
           helm-pat: ${{ secrets.DSS_HELM_PAT }}
