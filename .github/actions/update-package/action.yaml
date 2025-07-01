@@ -12,9 +12,9 @@ inputs:
     description: "Version string to set in enviroment.dev"
     required: true
   package-ref:
-    required: true
+    required: false
   enviromentMode:
-    required: true
+    required: false
     type: string
     default: dev
 
