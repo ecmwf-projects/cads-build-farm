@@ -23,6 +23,8 @@ runs:
   steps:
     - name: Loop over repositories
       shell: bash
+      env: 
+        ENVIRONMENT_MODE: ${{ inputs.enviromentMode }}
       run: |
         IFS=$'\n' read -ra REPOS <<< "${{ inputs.repositories }}"
         for REPO in "${REPOS[@]}"; do
@@ -41,7 +43,7 @@ runs:
           git checkout -b automatic_package_update
         fi
 
-        sed -i -r "s|^${{ inputs.package-ref }}=.*$|${{ inputs.package-ref }}=\"${{ inputs.version }}\"|" enviroment.{{ inputs.enviromentMode }}
+        sed -i -r "s|^${{ inputs.package-ref }}=.*$|${{ inputs.package-ref }}=\"${{ inputs.version }}\"|" enviroment.$ENVIRONMENT_MODE
 
         git config user.email "${{ github.repository_owner }}@bopen.com"
         git config user.name "${{ github.repository_owner }}"
