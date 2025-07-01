@@ -17,7 +17,7 @@ on:
         required: false
         type: string
       package-ref:
-        required: true
+        required: false
         type: string
     secrets:
       HARBOR_USER:
