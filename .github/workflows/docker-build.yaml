@@ -84,6 +84,7 @@ jobs:
           version: ${{ steps.version.outputs.version }}
           enviromentMode: ${{ steps.version.outputs.enviromentMode }}
 
+
       - name: Update HelmChart
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
         with:

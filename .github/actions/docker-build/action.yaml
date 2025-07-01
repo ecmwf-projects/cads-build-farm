@@ -34,6 +34,8 @@ runs:
         docker build . \
           -t ${{ inputs.image-tag }} \
           --build-arg MODE=${{ inputs.enviromentMode }} \
+          --build-arg CADS_PAT=${{ secrets.CADS_PAT }} \
+          --build-arg CDS_PAT=${{ secrets.CDS_PAT }} \
           -f ${{ inputs.dockerfile }}
     - name: docker tag and push
       shell: bash
