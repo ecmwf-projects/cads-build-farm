@@ -14,6 +14,9 @@ outputs:
   is-stable:
     description: "Whether the version is stable"
     value: ${{ steps.version_step.outputs.is-stable }}
+  enviromentMode:
+    description: "The environment mode based on stability"
+    value: ${{ steps.set_mode.outputs.enviromentMode }}
 
 runs:
   using: "composite"
@@ -70,5 +73,13 @@ runs:
           is_stable=false
           echo "version ${{ steps.version_step.outputs.GitVersion_SemVer }} is not stable"
         fi
-        
         echo "is-stable=$is_stable" >> $GITHUB_OUTPUT
+
+    - name: Set enviromentMode
+      id: set_mode
+      run: |
+        if [ "${{ steps.version.outputs.is-stable }}" == "true" ]; then
+          echo "enviromentMode=stable" >> $GITHUB_OUTPUT
+        else
+          echo "enviromentMode=dev" >> $GITHUB_OUTPUT
+        fi

@@ -4,6 +4,9 @@ description: 'Docker build tag and push on a container registry'
 on:
   workflow_call:
     inputs:
+      enable-package-update:
+        required: false
+        type: boolean
       dockerfile:
         required: true
         type: string
@@ -67,6 +70,7 @@ jobs:
           echo "image-name: ${{ steps.image-variables.outputs.image-name }}"
           echo "version ${{ steps.version.outputs.version }}"
 
+
       - name: Dockerfile build tag and push
         uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
         with:
@@ -77,6 +81,7 @@ jobs:
           image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
           image-name: ${{ steps.image-variables.outputs.image-name }}
           version: ${{ steps.version.outputs.version }}
+          enviromentMode: ${{ steps.version.outputs.enviromentMode }}
 
       - name: Update HelmChart
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
@@ -86,6 +91,7 @@ jobs:
           helm-pat: ${{ secrets.DSS_HELM_PAT }}
 
       - name: Update Related Python Packages
+        if: inputs.enable-package-update == true
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@helm-chart-pipeline
         with:
           repositories: ${{ inputs.repositories }}

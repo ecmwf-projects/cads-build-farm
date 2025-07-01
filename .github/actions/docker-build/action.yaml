@@ -19,7 +19,10 @@ inputs:
     required: true
   version:
     required: true
-
+  enviromentMode:
+    required: true
+    type: string
+    default: dev
 
 
 runs:
@@ -30,6 +33,7 @@ runs:
       run: |
         docker build . \
           -t ${{ inputs.image-tag }} \
+          --build-arg MODE=${{ inputs.enviromentMode }} \
           -f ${{ inputs.dockerfile }}
     - name: docker tag and push
       shell: bash
