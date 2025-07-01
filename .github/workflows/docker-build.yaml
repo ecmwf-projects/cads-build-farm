@@ -24,9 +24,6 @@ on:
         required: true
       HARBOR_TOKEN:
         required: true
-      HARBOR_IP:
-        required: true
-
 
 env:
   registryUrl: eccr.ecmwf.int
