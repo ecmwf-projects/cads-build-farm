@@ -76,6 +76,7 @@ runs:
         echo "is-stable=$is_stable" >> $GITHUB_OUTPUT
 
     - name: Set enviromentMode
+      shell: bash
       id: set_mode
       run: |
         if [ "${{ steps.version.outputs.is-stable }}" == "true" ]; then
