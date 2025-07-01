@@ -35,7 +35,7 @@ runs:
 
         # Checkout branch
         git fetch origin
-        if git show-ref --verify --quiet refs/heads/automatic_package_update; then
+        if git ls-remote --exit-code --heads origin automatic_package_update; then
           echo "Branch exists"
           git checkout automatic_package_update
         else
