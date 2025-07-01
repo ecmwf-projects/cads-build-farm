@@ -8,6 +8,15 @@ inputs:
   helm-pat:
     description: "PAT token to access the repo"
     required: true
+  version:
+    description: "Version string to set in enviroment.dev"
+    required: true
+  package-ref:
+    required: true
+  enviromentMode:
+    required: true
+    type: string
+    default: dev
 
 runs:
   using: "composite"
@@ -31,6 +40,8 @@ runs:
           echo "Branch does not exist"
           git checkout -b automatic_package_update
         fi
+
+        sed -i -r "s|^${{ inputs.package-ref }}=.*$|${{ inputs.package-ref }}=\"${{ inputs.version }}\"|" enviroment.{{ inputs.enviromentMode }}
 
         git config user.email "${{ github.repository_owner }}@bopen.com"
         git config user.name "${{ github.repository_owner }}"

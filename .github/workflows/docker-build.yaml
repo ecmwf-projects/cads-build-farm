@@ -16,6 +16,9 @@ on:
       repositories:
         required: true
         type: string
+      package-ref:
+        required: true
+        type: string
     secrets:
       HARBOR_USER:
         required: true
@@ -96,3 +99,5 @@ jobs:
         with:
           repositories: ${{ inputs.repositories }}
           helm-pat: ${{ secrets.DSS_HELM_PAT }}
+          enviromentMode: ${{ steps.version.outputs.enviromentMode }}
+          package-ref: ${{ inputs.package-ref }}
