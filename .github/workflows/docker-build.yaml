@@ -25,6 +25,7 @@ on:
       HARBOR_TOKEN:
         required: true
 
+
 env:
   registryUrl: eccr.ecmwf.int
 
@@ -57,7 +58,7 @@ jobs:
       - name: Login to harbor registry
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.HARBOR_IP }}
+          registry: ${{ ${{ env.registryUrl }} }}
           username: ${{ secrets.HARBOR_USER }}
           password: ${{ secrets.HARBOR_TOKEN }}
 
