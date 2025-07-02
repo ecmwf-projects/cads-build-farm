@@ -53,6 +53,18 @@ runs:
             is-release-branch: false
             is-main-branch: true
             pre-release-weight: 0
+
+          cicdRefactor:
+            mode: ContinuousDelivery
+            label: beta
+            increment: Minor
+            prevent-increment:
+              of-merged-branch: false
+            track-merge-target: true
+            track-merge-message: true
+            regex: ^cicdRefactor$
+            is-main-branch: false
+
         EOF
 
     - name: determine Version
