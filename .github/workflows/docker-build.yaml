@@ -83,8 +83,8 @@ jobs:
           image-name: ${{ steps.image-variables.outputs.image-name }}
           version: ${{ steps.version.outputs.version }}
           enviromentMode: ${{ steps.version.outputs.enviromentMode }}
-          CADS_PAT: ${{ secrets.CADS_PAT }}
-          CDS_PAT: ${{ secrets.CDS_PAT }}
+          cads-pat: ${{ secrets.CADS_PAT }}
+          cds-pat: ${{ secrets.CDS_PAT }}
 
       - name: Update HelmChart
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline

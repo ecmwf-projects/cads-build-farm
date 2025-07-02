@@ -23,7 +23,10 @@ inputs:
     required: true
     type: string
     default: dev
-
+  cads-pat:
+    required: true
+  cds-pat:
+    required: true
 
 runs:
   using: "composite"
@@ -34,8 +37,8 @@ runs:
         docker build . \
           -t ${{ inputs.image-tag }} \
           --build-arg MODE=${{ inputs.enviromentMode }} \
-          --build-arg CADS_PAT=${{ inputs.CADS_PAT }} \
-          --build-arg CDS_PAT=${{ inputs.CDS_PAT }} \
+          --build-arg CADS_PAT=${{ inputs.cads-pat }} \
+          --build-arg CDS_PAT=${{ inputs.cds-pat }} \
           -f ${{ inputs.dockerfile }}
     - name: docker tag and push
       shell: bash
