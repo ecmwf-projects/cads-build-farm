@@ -34,8 +34,12 @@ runs:
         printf "%q\n" "$REPOSITORIES"
 
         echo "$REPOSITORIES" | while IFS= read -r REPO; do
-          echo "Updating '$REPO'"
+          if [ -z "$REPO" ]; then
+            echo "Skipping empty line"
+            continue
+          fi
 
+          echo "Updating '$REPO'"
           git clone https://x-access-token:$PAT@github.com/$REPO temp-repo
           cd temp-repo
 
