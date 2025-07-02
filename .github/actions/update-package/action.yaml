@@ -24,13 +24,17 @@ runs:
     - name: Loop over repositories
       shell: bash
       env: 
+        REPOSITORIES: ${{ inputs.repositories }}
         ENVIRONMENT_MODE: ${{ inputs.enviromentMode }}
+        PACKAGE_REF: ${{ inputs.package-ref }}
+        VERSION: ${{ inputs.version }}
+        PAT: ${{ inputs.helm-pat }}
       run: |
-        IFS=$'\n' read -ra REPOS <<< "${{ inputs.repositories }}"
+        IFS=$'\n' read -ra REPOS <<< "$REPOSITORIES"
         for REPO in "${REPOS[@]}"; do
           echo "Updating $REPO"
 
-        git clone https://x-access-token:${{ inputs.helm-pat }}@github.com/$REPO temp-repo
+        git clone https://x-access-token:$PAT@github.com/$REPO temp-repo
         cd temp-repo
 
         # Checkout branch
@@ -43,7 +47,7 @@ runs:
           git checkout -b automatic_package_update
         fi
 
-        sed -i -r "s|^${{ inputs.package-ref }}=.*$|${{ inputs.package-ref }}=\"${{ inputs.version }}\"|" environment.$ENVIRONMENT_MODE
+        sed -i -r "s|^$PACKAGE_REF=.*$|$PACKAGE_REF=\"$VERSION\"|" environment.$ENVIRONMENT_MODE
 
         git config user.email "${{ github.repository_owner }}@bopen.com"
         git config user.name "${{ github.repository_owner }}"
@@ -52,7 +56,7 @@ runs:
         git push origin automatic_package_update --force
 
         response=$(curl -s -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+          -H "Authorization: Bearer $PAT" \
           https://api.github.com/repos/$REPO/pulls)
 
         pr_number=$(echo "$response" | jq '.[] | select(.head.ref=="automatic_package_update" and .base.ref=="main") | .number')
@@ -61,7 +65,7 @@ runs:
           echo "No PR exists, creating..."
           curl -X POST \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+            -H "Authorization: Bearer $PAT" \
             https://api.github.com/repos/$REPO/pulls \
             -d '{
               "title": "Automatic python package update",
@@ -73,7 +77,7 @@ runs:
           echo "PR #$pr_number exists, updating body..."
           curl -X PATCH \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+            -H "Authorization: Bearer $PAT" \
             https://api.github.com/repos/$REPO/pulls/$pr_number \
             -d '{
               "body": "This PR updates the python package for '$GITHUB_REPOSITORY'"
