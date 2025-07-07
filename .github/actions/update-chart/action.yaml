@@ -67,7 +67,7 @@ runs:
           https://api.github.com/repos/${{ inputs.chart-repo }}/pulls)
 
         pr_number=$(echo "$response" | docker run --rm -i imega/jq '.[] | select(.head.ref=="automatic_update" and .base.ref=="main") | .number')
-
+        echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
         if [ -z "$pr_number" ]; then
           echo "No PR exists, creating a new one."
           curl -X POST \
