@@ -98,8 +98,20 @@ runs:
       run: |
         pr_number=${{ steps.check_pr.outputs.pr_number }}
         echo "Merging PR #$pr_number"
-        curl -X PUT \
+        merge_response=$(curl -X PUT \
           -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
           -H "Accept: application/vnd.github+json" \
           https://api.github.com/repos/${{ inputs.chart-repo }}/pulls/$pr_number/merge \
-          -d '{"commit_title":"Auto-merge update","merge_method":"squash"}'
+          -d '{"commit_title":"Auto-merge update","merge_method":"squash"}')
+
+        echo "Merge response: $merge_response"
+
+        merged=$(echo "$merge_response" | grep '"merged": true' || true)
+
+        if [ -n "$merged" ]; then
+          echo "Merge successful. Deleting remote branch automatic_update."
+          git fetch origin
+          git push origin --delete automatic_update || true
+        else
+          echo "Merge failed or already merged, skipping branch delete."
+        fi
