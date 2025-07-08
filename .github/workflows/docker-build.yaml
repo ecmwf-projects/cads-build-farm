@@ -94,7 +94,7 @@ jobs:
           helm-pat: ${{ secrets.DSS_HELM_PAT }}
 
       - name: Update Related Python Packages
-        if: inputs.enable-package-update == true
+        if: steps.version.outputs.enviromentMode == "stable"
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@helm-chart-pipeline
         with:
           repositories: ${{ inputs.repositories }}
