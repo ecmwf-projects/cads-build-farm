@@ -1,0 +1,26 @@
+name: 'Define runtime variables'
+description: 'Set some env variable usefull for the workflow'
+
+
+
+outputs:
+  build-image-name:
+    value: ${{ steps.set-runtime-variables.outputs.build-image-name }}
+  image-name:
+    value: ${{ steps.set-runtime-variables.outputs.image-name }}
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set usefull vars
+      id: set-runtime-variables
+      shell: bash
+      run: |
+        sanitizedRepoName=$( echo $GITHUB_REPOSITORY | sed 's/\ecmwf-projects\/cads-//g')
+        build_image_name=${sanitizedRepoName}-build
+
+        echo build-image-name=$build_image_name >> $GITHUB_OUTPUT
+        echo build-image-name=$build_image_name >> $GITHUB_ENV
+        echo image-name=$sanitizedRepoName >> $GITHUB_OUTPUT
+        echo image-name=$sanitizedRepoName >> $GITHUB_ENV

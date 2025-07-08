@@ -1,0 +1,98 @@
+name: 'Compute version'
+description: 'Sets up .NET environment and determines version using GitVersion'
+
+inputs:
+  main-branch-regex:
+    description: 'The regex to match the long living branches'
+    required: false
+    default: '^master$|^main$'
+
+outputs:
+  version:
+    description: "The version determined by GitVersion"
+    value: ${{ steps.version_step.outputs.GitVersion_SemVer }}
+  is-stable:
+    description: "Whether the version is stable"
+    value: ${{ steps.version_step.outputs.is-stable }}
+  enviromentMode:
+    description: "The environment mode based on stability"
+    value: ${{ steps.set_mode.outputs.enviromentMode }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: setup dotnet
+      uses: actions/setup-dotnet@v4
+      env:
+        DOTNET_INSTALL_DIR: "~/.dotnet"
+      with:
+        dotnet-version: 9.0.x
+
+    - name: install GitVersion
+      uses: gittools/actions/gitversion/setup@v3.1.1
+      with:
+        versionSpec: "6.0.x"
+
+    - name: create GitVersion config
+      shell: bash
+      run: |
+        <<EOF cat - > GitVersion.yml
+        branches:
+          main:
+            mode: ContinuousDelivery
+            label: alpha
+            increment: Minor
+            prevent-increment:
+              of-merged-branch: false
+            track-merge-target: true
+            track-merge-message: true
+            regex: ${{ inputs.main-branch-regex }}
+            source-branches: []
+            is-source-branch-for: []
+            tracks-release-branches: true
+            is-release-branch: false
+            is-main-branch: true
+            pre-release-weight: 0
+
+          cicdRefactor:
+            mode: ContinuousDelivery
+            label: beta
+            increment: Minor
+            prevent-increment:
+              of-merged-branch: false
+            track-merge-target: true
+            track-merge-message: true
+            regex: ^cicdRefactor$
+            is-main-branch: false
+
+        EOF
+
+    - name: determine Version
+      uses: gittools/actions/gitversion/execute@v3.1.1
+      id: version_step
+      with:
+        useConfigFile: true
+
+    - name: set outputs
+      shell: bash
+      id: set_outputs
+      run: |
+        is_stable=false
+        if [[ "${{ steps.version_step.outputs.preReleaseTag }}" == "" ]]; then
+          is_stable=true
+          echo "version ${{ steps.version_step.outputs.GitVersion_SemVer }} is stable"
+        else
+          is_stable=false
+          echo "version ${{ steps.version_step.outputs.GitVersion_SemVer }} is not stable"
+        fi
+        echo "is-stable=$is_stable" >> $GITHUB_OUTPUT
+
+    - name: Set enviromentMode
+      shell: bash
+      id: set_mode
+      run: |
+        if [ "${{ steps.version.outputs.is-stable }}" == "true" ]; then
+          echo "enviromentMode=stable" >> $GITHUB_OUTPUT
+        else
+          echo "enviromentMode=dev" >> $GITHUB_OUTPUT
+        fi

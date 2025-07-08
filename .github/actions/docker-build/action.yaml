@@ -1,0 +1,48 @@
+name: 'Build a Dockerfile'
+description: 'Build tag and push'
+
+
+
+inputs:
+  dockerfile:
+    description: 'The dockerfile to be built'
+    required: true
+  base-image-name:
+    required: false
+  base-image-tag:
+    required: false
+  image-tag:
+    required: true
+  registry:
+    required: true
+  image-name:
+    required: true
+  version:
+    required: true
+  enviromentMode:
+    required: true
+    type: string
+    default: dev
+  cads-pat:
+    required: true
+  cds-pat:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: docker build
+      shell: bash
+      run: |
+        docker build . \
+          -t ${{ inputs.image-tag }} \
+          --build-arg MODE=${{ inputs.enviromentMode }} \
+          --build-arg CADS_PAT=${{ inputs.cads-pat }} \
+          --build-arg CDS_PAT=${{ inputs.cds-pat }} \
+          -f ${{ inputs.dockerfile }}
+    - name: docker tag and push
+      shell: bash
+      run: |
+        image_and_version=${{ inputs.image-name }}:${{ inputs.version }}
+        docker tag $image_and_version ${{ inputs.registry }}/cads/$image_and_version
+        docker push ${{ inputs.registry }}/cads/$image_and_version

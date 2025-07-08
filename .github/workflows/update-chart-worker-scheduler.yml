@@ -1,0 +1,35 @@
+name: Schedule Update Chart Workflow
+
+on:
+  repository_dispatch:
+    types:
+      - external-repo-tagged
+
+jobs:
+  trigger-update-chart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract Chart Name from URL
+        id: extract
+        run: |
+          CHART_NAME=$(basename "${{ github.event.client_payload.repo_url }}" | cut -d'.' -f1)
+          CHART_VERSION=${{ github.event.client_payload.repo_tag }}
+          echo "chart_name=${CHART_NAME}" >> $GITHUB_ENV
+          echo "chart_version=${CHART_VERSION}" >> $GITHUB_ENV
+
+      - name: Trigger Update Chart Workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'update-chart.yml',
+              ref: context.ref,
+              inputs: {
+                chart_repo_url: ${{ github.event.client_payload.repo_url }},
+                chart_name: process.env.chart_name,
+                chart_version: process.env.chart_version
+              }
+            })

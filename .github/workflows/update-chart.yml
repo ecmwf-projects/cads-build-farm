@@ -1,0 +1,47 @@
+name: Push Chart to Harbor
+
+on:
+  workflow_dispatch:
+    inputs:
+      chart_repo_url:
+        description: 'URL of the external chart repository'
+        required: true
+      chart_name:
+        description: 'Name of the chart to push'
+        required: true
+      chart_version:
+        description: 'Version of the chart to push'
+        required: true
+
+jobs:
+  push-chart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.inputs.chart_repo_url | replace("https://github.com/", "") | replace(".git", "") }}
+          token: ${{ secrets.CADS_PAT }}
+
+      - name: Helm Publish Action
+        uses: huggingface/helm-publish-action@latest
+        with:
+          workingDirectory: .
+          repository: '${{ secrets.HARBOR_IP }}'
+          username: ${{ secrets.HARBOR_USER }}
+          password: ${{ secrets.HARBOR_TOKEN }}
+          beforeHook: helm dependencies update
+
+      - name: Download Helm chart
+        run: |
+          helm repo add external-repo ${{ github.event.inputs.chart_repo_url }}
+          helm repo update
+          helm pull external-repo/${{ github.event.inputs.chart_name }} --version ${{ github.event.inputs.chart_version }}
+
+      - name: Push chart to Harbor
+        env:
+          HARBOR_SECRET: ${{ secrets.HARBOR_SECRET }}
+        run: |
+          helm registry login --username admin --password $HARBOR_SECRET harbor.example.com
+          helm push ${{ github.event.inputs.chart_name }}-${{ github.event.inputs.chart_version }}.tgz oci://harbor.example.com/library

@@ -1,0 +1,11 @@
+channels:
+- conda-forge
+- nodefaults
+dependencies:
+- lsof
+- openssl!=3.2.0
+- pip
+- python=3.11
+- tsnyder::strace
+- pip:
+  - madbg
