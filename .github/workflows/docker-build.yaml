@@ -20,9 +20,9 @@ on:
         required: false
         type: string
     secrets:
-      HARBOR_USER:
+      DSS_HARBOR_USER:
         required: true
-      HARBOR_TOKEN:
+      DSS_HARBOR_TOKEN:
         required: true
 
 
@@ -59,8 +59,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ${{ env.registryUrl }}
-          username: ${{ secrets.HARBOR_USER }}
-          password: ${{ secrets.HARBOR_TOKEN }}
+          username: ${{ secrets.DSS_HARBOR_USER }}
+          password: ${{ secrets.DSS_HARBOR_TOKEN }}
 
 
       - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@helm-chart-pipeline
