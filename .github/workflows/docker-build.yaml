@@ -87,6 +87,7 @@ jobs:
           cds-pat: ${{ secrets.CDS_PAT }}
 
       - name: Update HelmChart
+        if: github.event_name != 'pull_request'
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
         with:
           chart-repo: ${{ inputs.chart-repo }}
