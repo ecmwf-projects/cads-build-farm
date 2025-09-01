@@ -51,7 +51,7 @@ jobs:
         run: cp cads-build-farm/scripts/* ./
 
       - name: compute semantic version
-        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@helm-chart-pipeline
+        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@main
         id: version
 
 
@@ -63,7 +63,7 @@ jobs:
           password: ${{ secrets.DSS_HARBOR_TOKEN }}
 
 
-      - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@helm-chart-pipeline
+      - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@main
         id: image-variables
       - name: Debug image variables
         run: |
@@ -73,7 +73,7 @@ jobs:
 
 
       - name: Dockerfile build tag and push
-        uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
+        uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@main
         with:
           registry: ${{ env.registryUrl }}
           dockerfile: ${{ inputs.dockerfile }}
@@ -88,7 +88,7 @@ jobs:
 
       - name: Update HelmChart
         if: github.event_name != 'pull_request'
-        uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@main
         with:
           chart-repo: ${{ inputs.chart-repo }}
           app-version: ${{ steps.version.outputs.version }}
@@ -96,7 +96,7 @@ jobs:
 
       - name: Update Related Python Packages
         if: ${{ steps.version.outputs.enviromentMode == 'stable' }}
-        uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@helm-chart-pipeline
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@main
         with:
           repositories: ${{ inputs.repositories }}
           helm-pat: ${{ secrets.DSS_HELM_PAT }}

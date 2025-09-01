@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: compute semantic version
-        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@helm-chart-pipeline
+        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@main
         id: version
 
       # - name: Login to harbor registry
