@@ -1,0 +1,84 @@
+name: 'Helm build tag and push'
+description: 'Package an Helm Chart and push on a container registry'
+
+on:
+  workflow_call:
+    secrets:
+      ECMWF_DOCKER_REGISTRY_USERNAME:
+        required: true
+      ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN:
+        required: true
+
+env:
+    registryUrl: https://eccr.ecmwf.int
+    helmRegustryUrl: eccr.ecmwf.int
+    registryUsername: ${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}
+    registryPassword: ${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}
+
+
+jobs:
+  building-helm-chart:
+    runs-on:
+      - ubuntu-latest
+    steps:
+
+      - name: Checkout chart-repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: compute semantic version
+        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@helm-chart-pipeline
+        id: version
+
+      # - name: Login to harbor registry
+      #   uses: docker/login-action@v2
+      #   with:
+      #     registry: ${{ env.registryUrl }}
+      #     username: ${{ env.registryUsername }}
+      #     password: ${{ env.registryPassword }}
+      - name: replace chart version
+        shell: bash
+        run: |
+          sed -i "s/version: .*/version: ${{ steps.version.outputs.version}}/g" Chart.yaml
+          cat Chart.yaml
+
+      - name: Set Helm Chart Variables
+        shell: bash
+        id: set_vars
+        run: |
+          output_folder=_output
+          mkdir -p _output
+          cp Chart.yaml $output_folder 2> /dev/null
+          cp values.yaml $output_folder 2> /dev/null
+          cp README.md $output_folder 2> /dev/null
+          cp -R templates $output_folder 2> /dev/null
+
+          chartName=$(awk '/^name:/{print $2}' Chart.yaml)
+          chartVersion=$(awk '/^version:/{print $2}' Chart.yaml)
+
+          echo "HELM_CHART_NAME=$chartName" >> $GITHUB_ENV
+          echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
+          echo output-folder=$output_folder >> $GITHUB_ENV
+
+      - name: helm build and push
+        shell: bash
+        run: |
+          docker run \
+          --rm \
+          --entrypoint=sh \
+          -v $(pwd)/${{ env.output_folder }}:/work \
+          -w /work \
+          -e REGISTRY_USERNAME='${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}' \
+          -e REGISTRY_PASSWORD='${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}' \
+          alpine/helm \
+          -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && helm package . && helm push /work/${HELM_CHART_NAME}-${HELM_CHART_VERSION}.tgz oci://eccr.ecmwf.int/cads/helm"
+
+      - name: cleanup
+        shell: bash
+        run: |
+          rm -rf ${{ steps.set_vars.outputs.output-folder }}
+
+
+
+

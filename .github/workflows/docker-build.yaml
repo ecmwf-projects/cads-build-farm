@@ -1,0 +1,105 @@
+name: 'Docker build tag and push'
+description: 'Docker build tag and push on a container registry'
+
+on:
+  workflow_call:
+    inputs:
+      enable-package-update:
+        required: false
+        type: boolean
+      dockerfile:
+        required: true
+        type: string
+      chart-repo:
+        required: true
+        type: string
+      repositories:
+        required: false
+        type: string
+      package-ref:
+        required: false
+        type: string
+    secrets:
+      DSS_HARBOR_USER:
+        required: true
+      DSS_HARBOR_TOKEN:
+        required: true
+
+
+env:
+  registryUrl: eccr.ecmwf.int
+
+jobs:
+  building-docker-image:
+    runs-on:
+      - ubuntu-latest
+    steps:
+
+      - name: Checkout code-repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout cads-build-farm
+        uses: actions/checkout@v4
+        with:
+          repository: ecmwf-projects/cads-build-farm
+          path: cads-build-farm
+          ref: helm-chart-pipeline
+
+      - name: Copy all shared scripts to root
+        run: cp cads-build-farm/scripts/* ./
+
+      - name: compute semantic version
+        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@helm-chart-pipeline
+        id: version
+
+
+      - name: Login to harbor registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.registryUrl }}
+          username: ${{ secrets.DSS_HARBOR_USER }}
+          password: ${{ secrets.DSS_HARBOR_TOKEN }}
+
+
+      - uses: ecmwf-projects/cads-build-farm/.github/actions/image-variables@helm-chart-pipeline
+        id: image-variables
+      - name: Debug image variables
+        run: |
+          echo "build-image-name: ${{ steps.image-variables.outputs.build-image-name }}"
+          echo "image-name: ${{ steps.image-variables.outputs.image-name }}"
+          echo "version ${{ steps.version.outputs.version }}"
+
+
+      - name: Dockerfile build tag and push
+        uses: ecmwf-projects/cads-build-farm/.github/actions/docker-build@helm-chart-pipeline
+        with:
+          registry: ${{ env.registryUrl }}
+          dockerfile: ${{ inputs.dockerfile }}
+          base-image-tag: ${{ steps.version.outputs.version }}
+          base-image-name: ${{ steps.image-variables.outputs.build-image-name }}
+          image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
+          image-name: ${{ steps.image-variables.outputs.image-name }}
+          version: ${{ steps.version.outputs.version }}
+          enviromentMode: ${{ steps.version.outputs.enviromentMode }}
+          cads-pat: ${{ secrets.CADS_PAT }}
+          cds-pat: ${{ secrets.CDS_PAT }}
+
+      - name: Update HelmChart
+        if: github.event_name != 'pull_request'
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@helm-chart-pipeline
+        with:
+          chart-repo: ${{ inputs.chart-repo }}
+          app-version: ${{ steps.version.outputs.version }}
+          helm-pat: ${{ secrets.DSS_HELM_PAT }}
+
+      - name: Update Related Python Packages
+        if: ${{ steps.version.outputs.enviromentMode == 'stable' }}
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@helm-chart-pipeline
+        with:
+          repositories: ${{ inputs.repositories }}
+          helm-pat: ${{ secrets.DSS_HELM_PAT }}
+          package-ref: ${{ inputs.package-ref }}
+          version: ${{ steps.version.outputs.version }}
+          enviromentMode: ${{ steps.version.outputs.enviromentMode }}

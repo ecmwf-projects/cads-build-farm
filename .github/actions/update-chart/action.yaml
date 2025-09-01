@@ -1,0 +1,94 @@
+name: "Update Helm Chart"
+description: "Update appVersion in Chart.yaml"
+
+inputs:
+  chart-repo:
+    description: "Repo containing the Helm chart"
+    required: true
+  app-version:
+    description: "New appVersion to set"
+    required: true
+  helm-pat:
+    description: "PAT token to access the repo"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout chart repo
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.chart-repo }}
+        token: ${{ inputs.helm-pat }}
+        ref: main
+
+    - name: Check for existing branch
+      id: check_branch
+      shell: bash
+      run: |
+        git fetch origin
+        if git show-ref --verify --quiet refs/heads/automatic_update; then
+          echo "Branch exists"
+          git checkout automatic_update
+        else
+          echo "Branch does not exist"
+          git checkout -b automatic_update
+        fi
+
+    - name: Update appVersion
+      shell: bash
+      run: |
+        sed -i -r "s/appVersion:(.*)/appVersion: ${{ inputs.app-version }}/g" Chart.yaml
+
+    - name: Commit changes
+      shell: bash
+      run: |
+        git config --local user.email "${{ github.repository_owner }}@bopen.com"
+        git config --local user.name "${{ github.repository_owner }}"
+        git add Chart.yaml
+        if git diff-index --quiet HEAD; then
+          echo "Nothing to commit, Chart.yaml is up-to-date."
+        else
+          git commit -m "Update appVersion to ${{ inputs.app-version }}"
+        fi
+
+    - name: Push changes
+      shell: bash
+      run: |
+        git push origin automatic_update --force
+
+    - name: Create or update pull request
+      id: check_pr
+      shell: bash
+      run: |
+        response=$(curl -s -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+          https://api.github.com/repos/${{ inputs.chart-repo }}/pulls)
+
+        pr_number=$(echo "$response" | docker run --rm -i imega/jq '.[] | select(.head.ref=="automatic_update" and .base.ref=="main") | .number')
+        echo "pr_number=$pr_number" >> $GITHUB_OUTPUT
+        if [ -z "$pr_number" ]; then
+          echo "No PR exists, creating a new one."
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+            https://api.github.com/repos/${{ inputs.chart-repo }}/pulls \
+            -d '{
+              "title": "Update appVersion",
+              "body": "This PR updates the appVersion to '${{ inputs.app-version }}'.",
+              "head": "automatic_update",
+              "base": "main"
+            }'
+        else
+          echo "PR #$pr_number exists, updating it."
+          curl -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Authorization: Bearer ${{ inputs.helm-pat }}" \
+            https://api.github.com/repos/${{ inputs.chart-repo }}/pulls/$pr_number \
+            -d '{
+              "body": "This PR updates the appVersion to '${{ inputs.app-version }}'."
+            }'
+        fi
