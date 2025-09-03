@@ -61,7 +61,21 @@ jobs:
           echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
           echo output-folder=$output_folder >> $GITHUB_ENV
 
-      - name: helm build and push
+      - name: helm build
+        shell: bash
+        run: |
+          docker run \
+          --rm \
+          --entrypoint=sh \
+          -v $(pwd)/${{ env.output_folder }}:/work \
+          -w /work \
+          -e REGISTRY_USERNAME='${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}' \
+          -e REGISTRY_PASSWORD='${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}' \
+          alpine/helm \
+          -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && helm package . "
+
+      - name: helm push
+        if: github.event_name != 'pull_request'
         shell: bash
         run: |
           docker run \
@@ -78,7 +92,4 @@ jobs:
         shell: bash
         run: |
           rm -rf ${{ steps.set_vars.outputs.output-folder }}
-
-
-
 
