@@ -57,7 +57,7 @@ runs:
           else
             VERSION="$VERSION"
           fi
-          sed -i '' -E "s|^($PACKAGE_REF)=\"?(v?)[^\"]*\"?|\1=\"\2$VERSION\"|" environment.$ENVIRONMENT_MODE
+          sed -i -r "s|^($PACKAGE_REF)=\"?(v?)[^\"]*\"?|\1=\"\2$VERSION\"|" environment.$ENVIRONMENT_MODE
 
           git config user.email "${{ github.repository_owner }}@bopen.com"
           git config user.name "${{ github.repository_owner }}"
