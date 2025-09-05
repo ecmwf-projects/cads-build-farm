@@ -54,6 +54,8 @@ runs:
           fi
           if [ "$ENVIRONMENT_MODE" = "dev" ]; then
             VERSION="main"
+          else
+            VERSION="v$VERSION"
           fi
           sed -i -r "s|^$PACKAGE_REF=.*$|$PACKAGE_REF=\"$VERSION\"|" environment.$ENVIRONMENT_MODE
 
