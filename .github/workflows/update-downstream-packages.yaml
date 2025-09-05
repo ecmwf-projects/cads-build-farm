@@ -1,0 +1,39 @@
+name: 'Update downstream packages'
+
+on:
+  workflow_call:
+    inputs:
+      repositories:
+        description: "Comma-separated list of repos"
+        required: true
+        type: string
+      version:
+        description: "Version string to set in enviroment.dev"
+        required: true
+        type: string
+      package-ref:
+        required: false
+        type: string
+
+
+jobs:
+  update-downstream-packages:
+    runs-on:
+      - ubuntu-latest
+    steps:
+    - name: Checkout code-repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: compute semantic version
+      uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@main
+      id: version
+    - name: Pull request to update packages
+      uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@main
+      with:
+        package-ref: "CADS_CATALOGUE_REF"
+        enviromentMode: stable
+        helm-pat: ${{ secrets.DSS_HELM_PAT }}
+        version: ${{ steps.version.outputs.version }}
+        repositories: |
+          ecmwf-projects/cads-catalogue-api-service
