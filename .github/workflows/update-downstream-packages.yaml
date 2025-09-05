@@ -7,12 +7,8 @@ on:
         description: "Comma-separated list of repos"
         required: true
         type: string
-      version:
-        description: "Version string to set in enviroment.dev"
-        required: true
-        type: string
       package-ref:
-        required: false
+        required: true
         type: string
 
 
@@ -31,9 +27,8 @@ jobs:
     - name: Pull request to update packages
       uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@main
       with:
-        package-ref: "CADS_CATALOGUE_REF"
+        package-ref: ${{ inputs.package-ref }}
         enviromentMode: stable
         helm-pat: ${{ secrets.DSS_HELM_PAT }}
         version: ${{ steps.version.outputs.version }}
-        repositories: |
-          ecmwf-projects/cads-catalogue-api-service
+        repositories: ${{ inputs.repositories }}
