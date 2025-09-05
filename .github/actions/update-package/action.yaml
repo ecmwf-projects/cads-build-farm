@@ -55,9 +55,9 @@ runs:
           if [ "$ENVIRONMENT_MODE" = "dev" ]; then
             VERSION="main"
           else
-            VERSION="v$VERSION"
+            VERSION="$VERSION"
           fi
-          sed -i -r "s|^$PACKAGE_REF=.*$|$PACKAGE_REF=\"$VERSION\"|" environment.$ENVIRONMENT_MODE
+          sed -i '' -E "s|^($PACKAGE_REF)=\"?(v?)[^\"]*\"?|\1=\"\2$VERSION\"|" environment.$ENVIRONMENT_MODE
 
           git config user.email "${{ github.repository_owner }}@bopen.com"
           git config user.name "${{ github.repository_owner }}"
