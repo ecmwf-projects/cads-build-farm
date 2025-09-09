@@ -7,10 +7,9 @@ The pipeline is designed to automate the release process starting from a PR on t
 ---
 
 ## Table of Contents
-- [Pipeline Overview](#-pipeline-overview)
-- [Triggers and Workflow](#️-triggers-and-workflow)
-- [Pipeline Steps](#-pipeline-steps)
-- [Logical Flow](#-logical-flow)
+- [Pipeline Overview](#pipeline-overview)
+- [Triggers and Workflow](#triggers-and-workflow)
+- [Workflow Steps](#workflow-steps)
 
 ---
 
@@ -92,3 +91,5 @@ The associated steps perform the following:
 
 - **Update Related Python Packages**  
   if the built image has been tagged with a stable semVer, the related Python packages will be updated with an automatic PR.
+
+---
