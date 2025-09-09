@@ -68,7 +68,7 @@ The associated steps perform the following:
   Checks out the `cads-build-farm` repository to copy a set of scripts contained in the `scripts/` folder.
 
 - **Copy all shared scripts to root**  
-  Copies the shared scripts into the root directory.
+  Copies the shared `scripts/` into the root directory of code repository.
 
 - **Compute semantic version**  
   Calculates the version using `gitversion`.
