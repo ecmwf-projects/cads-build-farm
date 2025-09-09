@@ -8,12 +8,11 @@ The pipeline is designed to automate the release process starting from a PR on t
 
 ## Table of Contents
 - [Pipeline Overview](#pipeline-overview)
-- [Triggers and Workflow](#triggers-and-workflow)
 - [Workflow Steps](#workflow-steps)
 
 ---
 
-## 🏗️ Pipeline Overview
+##  Pipeline Overview
 The pipeline consists of **two interconnected workflows**:
 
 - **Calling Workflow (in this case from the cads-broker code `.github/workflow/main.yaml`)**  
@@ -58,7 +57,7 @@ The pipeline consists of **two interconnected workflows**:
 
 ---
 
-## 🔄 Workflow Steps
+##  Workflow Steps
 
 The associated steps perform the following:
 
