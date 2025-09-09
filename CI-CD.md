@@ -12,7 +12,7 @@ The pipeline is designed to automate the release process starting from a PR on t
 
 ---
 
-##  Pipeline Overview
+## Pipeline Overview
 The pipeline consists of **two interconnected workflows**:
 
 - **Calling Workflow (in this case from the cads-broker code `.github/workflow/main.yaml`)**  
@@ -57,38 +57,72 @@ The pipeline consists of **two interconnected workflows**:
 
 ---
 
-##  Workflow Steps
+## Workflow Steps
 
 The associated steps perform the following:
 
 - **Checkout code-repo**  
-  checks out the calling repository (in this case, the broker code)
+  Checks out the calling repository (in this case, the broker code).
 
 - **Checkout cads-build-farm**  
-  checks out the `cads-build-farm` repository to copy a set of scripts contained in the `scripts/` folder
+  Checks out the `cads-build-farm` repository to copy a set of scripts contained in the `scripts/` folder.
 
 - **Copy all shared scripts to root**  
-  copies the shared scripts into the root directory
+  Copies the shared scripts into the root directory.
 
 - **Compute semantic version**  
-  calculates the version using `gitversion`
+  Calculates the version using `gitversion`.
 
 - **Login to harbor registry**  
-  authenticates against the Harbor registry
+  Authenticates against the Harbor registry.  
+  Parameters:  
+  ```yaml
+  registry: url of the registry 
+  username: username passed via secret at project level
+  password: password passed via secret at project level
+  ```
 
 - **Image variables**  
-  extracts variables such as the image name and version that will be used later
+  Extracts variables such as the image name and version that will be used later.  
+  Outputs:  
+  ```yaml
+  build-image-name: the name of the image used to tag
+  version: the version used together with the image name
+  ```
 
 - **Debug image variables**  
-  simple debug output of the previously created variables
+  Simple debug output of the previously created variables.
 
 - **Dockerfile build tag and push**  
-  performs the actual build, tag, and push of the Docker image
+  Performs the actual build, tag, and push of the Docker image.  
+  Parameters:  
+  ```yaml
+  registry: url of the harbor registry passed as env var
+  dockerfile: the name of the dockerfile present in the code repo
+  image-tag: the version calculated in the gitversion and image-variable steps
+  image-name: the name calculated in the gitversion and image-variable steps
+  version: the version used to build the image
+  enviromentMode: triggers the Update Related Python Packages if the version is stable
+  cads-pat: PAT for code build project present at project level
+  cds-pat: PAT for build project present at project level
+  ```
 
 - **Update HelmChart**  
-  automates the PR for the related Helm Chart (in this case `dss-broker`)
+  Automates the PR for the related Helm Chart (in this case `dss-broker`).  
+  Parameters:  
+  ```yaml
+  chart-repo: name of the helm chart repo triggered via the PR
+  app-version: replaces the variable appVersion in the Chart.yaml
+  helm-pat: GitHub PAT used to login to Harbor present at project level
+  ```
 
 - **Update Related Python Packages**  
-  if the built image has been tagged with a stable semVer, the related Python packages will be updated with an automatic PR.
-
----
+  If the built image has been tagged with a stable semVer, the related Python packages will be updated with an automatic PR.  
+  Parameters:  
+  ```yaml
+  repositories: names of the repositories to be triggered in order to upgrade the python packages
+  helm-pat: GitHub PAT used to login to Harbor present at project level
+  package-ref: the name of the package present in environment.stable or dev
+  version: the version used to build the image
+  enviromentMode: triggers the Update Related Python Packages if the version is stable
+  ```
