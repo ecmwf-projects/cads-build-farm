@@ -29,6 +29,6 @@ jobs:
       with:
         package-ref: ${{ inputs.package-ref }}
         enviromentMode: stable
-        helm-pat: ${{ secrets.DSS_HELM_PAT }}
+        github-pat: ${{ secrets.DSS_HELM_PAT }}
         version: ${{ steps.version.outputs.version }}
         repositories: ${{ inputs.repositories }}

@@ -92,14 +92,14 @@ jobs:
         with:
           chart-repo: ${{ inputs.chart-repo }}
           app-version: ${{ steps.version.outputs.version }}
-          helm-pat: ${{ secrets.DSS_HELM_PAT }}
+          github-pat: ${{ secrets.DSS_HELM_PAT }}
 
       - name: Update Related Python Packages
         if: ${{ steps.version.outputs.enviromentMode == 'stable' }}
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@main
         with:
           repositories: ${{ inputs.repositories }}
-          helm-pat: ${{ secrets.DSS_HELM_PAT }}
+          github-pat: ${{ secrets.DSS_HELM_PAT }}
           package-ref: ${{ inputs.package-ref }}
           version: ${{ steps.version.outputs.version }}
           enviromentMode: ${{ steps.version.outputs.enviromentMode }}
