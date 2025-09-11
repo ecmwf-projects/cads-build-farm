@@ -7,10 +7,6 @@ inputs:
   dockerfile:
     description: 'The dockerfile to be built'
     required: true
-  base-image-name:
-    required: false
-  base-image-tag:
-    required: false
   image-tag:
     required: true
   registry:
