@@ -5,7 +5,7 @@ inputs:
   repositories:
     description: "Comma-separated list of repos"
     required: true
-  helm-pat:
+  github-pat:
     description: "PAT token to access the repo"
     required: true
   version:
@@ -28,7 +28,7 @@ runs:
         ENVIRONMENT_MODE: ${{ inputs.enviromentMode }}
         PACKAGE_REF: ${{ inputs.package-ref }}
         VERSION: ${{ inputs.version }}
-        PAT: ${{ inputs.helm-pat }}
+        PAT: ${{ inputs.github-pat }}
       run: |
         echo "REPOSITORIES raw input:"
         printf "%q\n" "$REPOSITORIES"
