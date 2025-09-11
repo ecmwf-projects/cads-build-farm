@@ -113,7 +113,7 @@ The associated steps perform the following:
   ```yaml
   chart-repo: name of the helm chart repo triggered via the PR
   app-version: replaces the variable appVersion in the Chart.yaml
-  helm-pat: GitHub PAT used to login to Harbor present at project level
+  github-pat: GitHub PAT used to login to Harbor present at project level
   ```
 
 - **Update Related Python Packages**  
@@ -121,7 +121,7 @@ The associated steps perform the following:
   Parameters:  
   ```yaml
   repositories: names of the repositories to be triggered in order to upgrade the python packages
-  helm-pat: GitHub PAT used to login to Harbor present at project level
+  github-pat: GitHub PAT used to login to Harbor present at project level
   package-ref: the name of the package present in environment.stable or dev
   version: the version used to build the image
   enviromentMode: triggers the Update Related Python Packages if the version is stable
