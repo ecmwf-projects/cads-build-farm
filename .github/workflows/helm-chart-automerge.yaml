@@ -1,7 +1,7 @@
 on:
   workflow_call:
     secrets:
-      DSS_HELM_PAT:
+      DSS_GITHUB_PAT:
         required: true
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
       - name: Auto-merge PR and cleanup branch
         shell: bash
         env:
-          GITHUB_TOKEN: ${{ secrets.DSS_HELM_PAT }}
+          GITHUB_TOKEN: ${{ secrets.DSS_GITHUB_PAT }}
         run: |
           pr_number=${{ github.event.pull_request.number }}
           repo=${{ github.repository }}
