@@ -19,6 +19,9 @@ on:
       package-ref:
         required: false
         type: string
+      image-name:
+        required: true
+        type: string
     secrets:
       DSS_HARBOR_USER:
         required: true
@@ -68,7 +71,7 @@ jobs:
       - name: Debug image variables
         run: |
           echo "build-image-name: ${{ steps.image-variables.outputs.build-image-name }}"
-          echo "image-name: ${{ steps.image-variables.outputs.image-name }}"
+          echo "image-name: ${{ inputs.image-name }}"
           echo "version ${{ steps.version.outputs.version }}"
 
 
@@ -77,8 +80,8 @@ jobs:
         with:
           registry: ${{ env.registryUrl }}
           dockerfile: ${{ inputs.dockerfile }}
-          image-tag: ${{ steps.image-variables.outputs.image-name }}:${{ steps.version.outputs.version }}
-          image-name: ${{ steps.image-variables.outputs.image-name }}
+          image-tag: ${{ inputs.image-name }}:${{ steps.version.outputs.version }}
+          image-name: ${{ inputs.image-name }}
           version: ${{ steps.version.outputs.version }}
           enviromentMode: ${{ steps.version.outputs.enviromentMode }}
           cads-pat: ${{ secrets.CADS_PAT }}
