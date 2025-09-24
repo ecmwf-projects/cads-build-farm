@@ -33,6 +33,12 @@ runs:
         echo "REPOSITORIES raw input:"
         printf "%q\n" "$REPOSITORIES"
 
+        if [ "$ENVIRONMENT_MODE" = "dev" ]; then
+          VERSION="main"
+        else
+          VERSION="v$VERSION"
+        fi
+
         echo "$REPOSITORIES" | while IFS= read -r REPO; do
           if [ -z "$REPO" ]; then
             echo "Skipping empty line"
@@ -51,11 +57,6 @@ runs:
           else
             echo "Branch does not exist"
             git checkout -b automatic_package_update
-          fi
-          if [ "$ENVIRONMENT_MODE" = "dev" ]; then
-            VERSION="main"
-          else
-            VERSION="v$VERSION"
           fi
           sed -i -r "s|^$PACKAGE_REF=.*$|$PACKAGE_REF=\"$VERSION\"|" environment.$ENVIRONMENT_MODE
 
