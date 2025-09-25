@@ -27,6 +27,8 @@ on:
         required: true
       DSS_HARBOR_TOKEN:
         required: true
+      DSS_GITHUB_PAT:
+        required: false
       CADS_PAT:
         required: false
 
