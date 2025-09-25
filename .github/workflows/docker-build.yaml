@@ -27,6 +27,8 @@ on:
         required: true
       DSS_HARBOR_TOKEN:
         required: true
+      CADS_PAT:
+        required: false
 
 
 env:
