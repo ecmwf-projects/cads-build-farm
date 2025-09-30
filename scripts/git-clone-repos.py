@@ -82,28 +82,31 @@ def git_clone_repos(
 
 @app.command()
 def main(
-    github_repos: list[str] = typer.Argument(..., help="GitHub repositories to clone"),
+    ecmwf_projects: list[str] = typer.Argument(..., help="ecmwf-projects GitHub repositories to clone"),
     bitbucket: list[str] = typer.Option(default=[], help="Bitbucket repository to clone"),
+    ecmwf: list[str] = typer.Option(default=[], help="ecmwf GitHub repositories to clone"),
     default_branch: bool = typer.Option(
         default=False, help="Clone default branch if env variable is missing"
     ),
 ):
     logging.basicConfig(level=logging.INFO)
     github_pat = os.getenv("CADS_PAT", "")
-    if github_pat:
-        github_pat = f"{github_pat}@"
     git_clone_repos(
-        github_repos,
-        f"https://{github_pat}github.com/ecmwf-projects",
+        ecmwf_projects,
+        f"https://{github_pat}@github.com/ecmwf-projects",
+        delete_remote=False,
+        default_branch=default_branch,
+    )
+    git_clone_repos(
+        ecmwf,
+        f"https://{github_pat}@github.com/ecmwf",
         delete_remote=False,
         default_branch=default_branch,
     )
     bitbucket_pat = os.getenv("CDS_PAT", "")
-    if bitbucket_pat:
-        bitbucket_pat = f"{bitbucket_pat}@"
     git_clone_repos(
         bitbucket,
-        f"https://{bitbucket_pat}git.ecmwf.int/scm/cds",
+        f"https://{bitbucket_pat}@git.ecmwf.int/scm/cds",
         delete_remote=False,
         default_branch=default_branch,
     )
