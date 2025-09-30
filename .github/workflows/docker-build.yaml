@@ -52,7 +52,7 @@ jobs:
         with:
           repository: ecmwf-projects/cads-build-farm
           path: cads-build-farm
-          ref: helm-chart-pipeline
+          ref: main
 
       - name: Copy all shared scripts to root
         run: cp cads-build-farm/scripts/* ./
