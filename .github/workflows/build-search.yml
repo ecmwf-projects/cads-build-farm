@@ -3,6 +3,10 @@ name: Build search image
 on:
   workflow_dispatch:
     inputs:
+      deployment_branch:
+        description: 'Deployment branch'
+        required: true
+        default: 'main'
       image_tag:
         description: 'Image tag'
         required: true
@@ -45,7 +49,8 @@ jobs:
     - name: Checkout cads-search repo
       uses: actions/checkout@v3
       with:
-        repository: ecmwf-projects/cads-search
+        repository: ecmwf/cads-search
+        ref: ${{ github.event.inputs.deployment_branch }}
         token: ${{ secrets.CADS_PAT }}
         path: .
 
