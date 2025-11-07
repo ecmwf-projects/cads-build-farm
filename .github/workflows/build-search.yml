@@ -51,7 +51,7 @@ jobs:
       with:
         repository: ecmwf/cads-search
         ref: ${{ github.event.inputs.deployment_branch }}
-        token: ${{ secrets.CADS_PAT }}
+        token: ${{ secrets.CADS_SEARCH_RO_PAT }}
         path: .
 
     - name: Set up JDK 24
