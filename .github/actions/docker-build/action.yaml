@@ -19,6 +19,10 @@ inputs:
     required: true
     type: string
     default: dev
+  dss-github-ecmwf-projects-pat:
+    required: true
+  dss-github-ecmwf-pat:
+    required: true
   cads-pat:
     required: true
   cds-pat:
@@ -33,6 +37,8 @@ runs:
         docker build . \
           -t ${{ inputs.image-tag }} \
           --build-arg MODE=${{ inputs.enviromentMode }} \
+          --build-arg DSS_GITHUB_ECMWF_PROJECTS_PAT=${{ inputs.dss-github-ecmwf-projects-pat }} \
+          --build-arg DSS_GITHUB_ECMWF_PAT=${{ inputs.dss-github-ecmwf-pat }} \
           --build-arg CADS_PAT=${{ inputs.cads-pat }} \
           --build-arg CDS_PAT=${{ inputs.cds-pat }} \
           -f ${{ inputs.dockerfile }}

@@ -31,6 +31,10 @@ on:
         required: false
       CADS_PAT:
         required: false
+      DSS_GITHUB_ECMWF_PROJECTS_PAT:
+        required: false
+      DSS_GITHUB_ECMWF_PAT:
+        required: false
 
 
 env:
@@ -88,6 +92,8 @@ jobs:
           image-name: ${{ inputs.image-name }}
           version: ${{ steps.version.outputs.version }}
           enviromentMode: ${{ steps.version.outputs.enviromentMode }}
+          dss-github-ecmwf-projects-pat: ${{ secrets.DSS_GITHUB_ECMWF_PROJECTS_PAT }}
+          dss-github-ecmwf-pat: ${{ secrets.DSS_GITHUB_ECMWF_PAT }}
           cads-pat: ${{ secrets.CADS_PAT }}
           cds-pat: ${{ secrets.CDS_PAT }}
 

@@ -91,18 +91,38 @@ def main(
 ):
     logging.basicConfig(level=logging.INFO)
     github_pat = os.getenv("CADS_PAT", "")
-    git_clone_repos(
-        ecmwf_projects,
-        f"https://{github_pat}@github.com/ecmwf-projects",
-        delete_remote=False,
-        default_branch=default_branch,
-    )
-    git_clone_repos(
-        ecmwf,
-        f"https://{github_pat}@github.com/ecmwf",
-        delete_remote=False,
-        default_branch=default_branch,
-    )
+    try:
+        git_clone_repos(
+            ecmwf_projects,
+            f"https://{github_pat}@github.com/ecmwf-projects",
+            delete_remote=False,
+            default_branch=default_branch,
+        )
+    except Exception:
+        github_ecmwf_projects_pat = os.getenv("DSS_GITHUB_ECMWF_PROJECTS_PAT", "")
+        git_clone_repos(
+            ecmwf_projects,
+            f"https://{github_ecmwf_projects_pat}@github.com/ecmwf-projects",
+            delete_remote=False,
+            default_branch=default_branch,
+        )
+
+    try:
+        git_clone_repos(
+            ecmwf,
+            f"https://{github_pat}@github.com/ecmwf",
+            delete_remote=False,
+            default_branch=default_branch,
+        )
+    except Exception:
+        github_ecmwf_pat = os.getenv("DSS_GITHUB_ECMWF_PAT", "")
+        git_clone_repos(
+            ecmwf,
+            f"https://{github_ecmwf_pat}@github.com/ecmwf",
+            delete_remote=False,
+            default_branch=default_branch,
+        )
+
     bitbucket_pat = os.getenv("CDS_PAT", "")
     git_clone_repos(
         bitbucket,

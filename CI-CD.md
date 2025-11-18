@@ -103,6 +103,8 @@ The associated steps perform the following:
   image-name: the name calculated in the gitversion and image-variable steps
   version: the version used to build the image
   enviromentMode: triggers the Update Related Python Packages if the version is stable
+  dss-github-ecmwf-projects-pat: PAT for code build project present at project level
+  dss-github-ecmwf-pat: PAT for code build project present at project level
   cads-pat: PAT for code build project present at project level
   cds-pat: PAT for build project present at project level
   ```

@@ -67,6 +67,8 @@ jobs:
         file: docker/${{ inputs.image_name }}/Dockerfile
         build-args: |
           MODE=${{ inputs.build_mode }}
+          DSS_GITHUB_ECMWF_PROJECTS_PAT=${{ secrets.DSS_GITHUB_ECMWF_PROJECTS_PAT }}
+          DSS_GITHUB_ECMWF_PAT=${{ secrets.DSS_GITHUB_ECMWF_PAT }}
           CADS_PAT=${{ secrets.CADS_PAT }}
           CDS_PAT=${{ secrets.BITBUCKET_TOKEN }}
           GITHUB_TOKEN=${{ secrets.CADS_PAT }}
