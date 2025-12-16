@@ -7,6 +7,10 @@ on:
         description: 'Image tag'
         required: true
         default: 'latest'
+      repo_branch:
+        description: 'Repository branch to build from'
+        required: true
+        default: 'main'
   workflow_run:
     workflows:
     - ecmwf-projects/cads-build-farm/build-images.yml
@@ -50,6 +54,7 @@ jobs:
       with:
         repository: ecmwf-projects/pycsw-dynamic
         token: ${{ secrets.CADS_PAT }}
+        ref: ${{ github.event.inputs.repo_branch }}
         path: ./pycsw-dynamic
     - name: Build and push
       uses: docker/build-push-action@v3
