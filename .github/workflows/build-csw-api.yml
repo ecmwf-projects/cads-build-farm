@@ -7,7 +7,7 @@ on:
         description: 'Image tag'
         required: true
         default: 'latest'
-      repo_branch:
+      deployment_branch:
         description: 'Repository branch to build from'
         required: true
         default: 'main'
@@ -54,7 +54,7 @@ jobs:
       with:
         repository: ecmwf-projects/pycsw-dynamic
         token: ${{ secrets.CADS_PAT }}
-        ref: ${{ github.event.inputs.repo_branch }}
+        ref: ${{ github.event.inputs.deployment_branch }}
         path: ./pycsw-dynamic
     - name: Build and push
       uses: docker/build-push-action@v3

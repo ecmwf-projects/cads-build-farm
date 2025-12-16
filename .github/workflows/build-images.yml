@@ -110,7 +110,7 @@ jobs:
         github_token: ${{ secrets.CADS_PAT }}
         workflow_file_name: build-csw-api.yml
         ref: ${{ github.event.ref }}
-        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}" }'
+        client_payload: '{ "image_tag": "${{ github.event.inputs.image_tag }}", "deployment_branch": "${{ github.event.inputs.deployment_branch }}" }'
         propagate_failure: false
         trigger_workflow: true
         wait_workflow: true
