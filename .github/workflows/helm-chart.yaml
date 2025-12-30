@@ -61,7 +61,7 @@ jobs:
           echo "HELM_CHART_VERSION=$chartVersion" >> $GITHUB_ENV
           echo output-folder=$output_folder >> $GITHUB_ENV
 
-      - name: helm build and push
+      - name: helm build
         shell: bash
         run: |
           docker run \
@@ -72,7 +72,22 @@ jobs:
           -e REGISTRY_USERNAME='${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}' \
           -e REGISTRY_PASSWORD='${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}' \
           alpine/helm \
-          -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && helm package . && helm push /work/${HELM_CHART_NAME}-${HELM_CHART_VERSION}.tgz oci://eccr.ecmwf.int/cads/helm"
+          -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && helm package . && ls -ltr /work/${HELM_CHART_NAME}-${HELM_CHART_VERSION}.tgz"
+
+      - name: helm push
+        shell: bash
+        run: |
+          echo "Helm Chart ${{ env.HELM_CHART_NAME }} version ${{ env.HELM_CHART_VERSION }} pushed to eccr.ecmwf.int/cads/helm" && \
+          echo "Chart reference: oci://eccr.ecmwf.int/cads/helm && \
+          docker run \
+          --rm \
+          --entrypoint=sh \
+          -v $(pwd)/${{ env.output_folder }}:/work \
+          -w /work \
+          -e REGISTRY_USERNAME='${{ secrets.ECMWF_DOCKER_REGISTRY_USERNAME }}' \
+          -e REGISTRY_PASSWORD='${{ secrets.ECMWF_DOCKER_REGISTRY_ACCESS_TOKEN }}' \
+          alpine/helm \
+          -c "echo \$REGISTRY_PASSWORD | helm registry login eccr.ecmwf.int --username \$REGISTRY_USERNAME --password-stdin && helm push /work/${HELM_CHART_NAME}-${HELM_CHART_VERSION}.tgz oci://eccr.ecmwf.int/cads/helm"
 
       - name: cleanup
         shell: bash
