@@ -53,12 +53,6 @@ runs:
             is-release-branch: false
             is-main-branch: true
             pre-release-weight: 0
-          tickets:
-            regex: ^(?<BranchName>COPDS-\d+)
-            mode: ContinuousDelivery
-            label: '{BranchName}'
-            increment: Patch # Force patch increment from the source
-            source-branches: ['main']
         EOF
 
     - name: determine Version
