@@ -55,7 +55,7 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-cim-api repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-cim-api
         ref: ${{ inputs.deployment_branch }}
@@ -63,7 +63,7 @@ jobs:
         path: cads-cim-api
 
     - name: Checkout cads-cim-ui repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-cim-ui
         ref: ${{ inputs.deployment_branch }}

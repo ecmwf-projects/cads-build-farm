@@ -50,7 +50,7 @@ jobs:
         config: buildkitd.toml
 
     - name: Checkout cads-deployment repo
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-deployment
         ref: ${{ github.event.inputs.deployment_branch }}
@@ -58,7 +58,7 @@ jobs:
         path: .
 
     - name: Clone cads-common repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: ecmwf-projects/cads-common
         token: ${{ secrets.CADS_PAT }}
