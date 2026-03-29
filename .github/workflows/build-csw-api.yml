@@ -57,7 +57,7 @@ jobs:
         ref: ${{ github.event.inputs.deployment_branch }}
         path: ./pycsw-dynamic
     - name: Build and push
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v5
       with:
         context: ./pycsw-dynamic
         push: true
