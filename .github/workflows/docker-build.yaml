@@ -96,6 +96,7 @@ jobs:
         uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@main
         with:
           chart-repo: ${{ inputs.chart-repo }}
+          branch: ${{ github.ref_name }}
           app-version: ${{ steps.version.outputs.version }}
           github-pat: ${{ secrets.DSS_GITHUB_PAT }}
 
@@ -106,5 +107,6 @@ jobs:
           repositories: ${{ inputs.repositories }}
           github-pat: ${{ secrets.DSS_GITHUB_PAT }}
           package-ref: ${{ inputs.package-ref }}
+          branch: ${{ github.ref_name }}
           version: ${{ steps.version.outputs.version }}
           enviromentMode: ${{ steps.version.outputs.enviromentMode }}

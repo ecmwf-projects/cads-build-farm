@@ -11,6 +11,9 @@ inputs:
   version:
     description: "Version string to set in enviroment.dev"
     required: true
+  branch:
+    description: "Branch to update"
+    required: true
   package-ref:
     required: false
   enviromentMode:
@@ -29,6 +32,7 @@ runs:
         PACKAGE_REF: ${{ inputs.package-ref }}
         VERSION: ${{ inputs.version }}
         PAT: ${{ inputs.github-pat }}
+        BRANCH: ${{ inputs.branch }}
       run: |
         echo "REPOSITORIES raw input:"
         printf "%q\n" "$REPOSITORIES"
@@ -51,12 +55,12 @@ runs:
 
           # Checkout branch
           git fetch origin
-          if git ls-remote --exit-code --heads origin automatic_package_update; then
+          if git ls-remote --exit-code --heads origin automatic_package_update_${BRANCH}; then
             echo "Branch exists"
-            git checkout automatic_package_update
+            git checkout automatic_package_update_${BRANCH}
           else
             echo "Branch does not exist"
-            git checkout -b automatic_package_update
+            git checkout -b automatic_package_update_${BRANCH}
           fi
           sed -i -r "s|^$PACKAGE_REF=.*$|$PACKAGE_REF=\"$VERSION\"|" environment.$ENVIRONMENT_MODE
 
@@ -64,13 +68,13 @@ runs:
           git config user.name "${{ github.repository_owner }}"
           git add .
           git commit -m "Automatic python package update from $GITHUB_REPOSITORY" || echo "Nothing to commit"
-          git push origin automatic_package_update --force
+          git push origin automatic_package_update_${BRANCH} --force
 
           response=$(curl -s -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer $PAT" \
             https://api.github.com/repos/$REPO/pulls)
 
-          pr_number=$(echo "$response" | jq '.[] | select(.head.ref=="automatic_package_update" and .base.ref=="main") | .number')
+          pr_number=$(echo "$response" | jq '.[] | select(.head.ref=="automatic_package_update_${BRANCH}" and .base.ref=="${BRANCH}") | .number')
 
           if [ -z "$pr_number" ]; then
             echo "No PR exists, creating..."
@@ -81,8 +85,8 @@ runs:
               -d '{
                 "title": "Automatic python package update",
                 "body": "This PR updates the python package for '$GITHUB_REPOSITORY'",
-                "head": "automatic_package_update",
-                "base": "main"
+                "head": "automatic_package_update_${BRANCH}",
+                "base": "${BRANCH}"
               }'
           else
             echo "PR #$pr_number exists, updating body..."

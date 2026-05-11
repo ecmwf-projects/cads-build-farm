@@ -5,6 +5,9 @@ inputs:
   chart-repo:
     description: "Repo containing the Helm chart"
     required: true
+  branch:
+    description: "Branch to update"
+    required: true
   app-version:
     description: "New appVersion to set"
     required: true
@@ -20,7 +23,7 @@ runs:
       with:
         repository: ${{ inputs.chart-repo }}
         token: ${{ inputs.github-pat }}
-        ref: main
+        ref: ${{ inputs.branch }}
 
     # - name: Check for existing branch
     #   id: check_branch
@@ -55,7 +58,7 @@ runs:
     - name: Push changes
       shell: bash
       run: |
-        git push origin main --force
+        git push origin ${{ inputs.branch }} --force
 
     # - name: Push changes
     #   shell: bash
