@@ -38,6 +38,7 @@ env:
 
 jobs:
   building-docker-image:
+    secrets: inherit
     runs-on:
       - ubuntu-latest
     steps:
