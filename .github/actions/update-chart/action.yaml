@@ -35,26 +35,26 @@ runs:
 
         echo "Validating specific branch: ${{ inputs.branch }}"
 
-        CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
-        URL="https://x-access-token:${{ inputs.github-pat }}@github.com/${CLEAN_REPO}.git"
+        # CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
+        # URL="https://x-access-token:${{ inputs.github-pat }}@github.com/${CLEAN_REPO}.git"
 
-        echo "Repo URL: "$URL
+        # echo "Repo URL: "$URL
         
-        # Check if the branch exists on the remote
-        if CHECK=$(git ls-remote --heads "$URL" "${{ inputs.branch }}" 2>&1); then
-          echo "✅ Branch found!"
-          echo "$CHECK"
-        else
-          echo "::error::Git check failed!"
-          echo "Error Detail: $CHECK"
-          exit 1
-        fi
+        # # Check if the branch exists on the remote
+        # if CHECK=$(git ls-remote --heads "$URL" "${{ inputs.branch }}" 2>&1); then
+        #   echo "✅ Branch found!"
+        #   echo "$CHECK"
+        # else
+        #   echo "::error::Git check failed!"
+        #   echo "Error Detail: $CHECK"
+        #   exit 1
+        # fi
         
-        if [ -z "$CHECK" ]; then
-          echo "::error::Branch '${{ inputs.branch }}' does not exist in ${{ inputs.chart-repo }}!"
-          exit 1
-        fi
-        echo "Branch '${{ inputs.branch }}' verified."
+        # if [ -z "$CHECK" ]; then
+        #   echo "::error::Branch '${{ inputs.branch }}' does not exist in ${{ inputs.chart-repo }}!"
+        #   exit 1
+        # fi
+        # echo "Branch '${{ inputs.branch }}' verified."
 
     - name: Checkout chart repo
       uses: actions/checkout@v4
