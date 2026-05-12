@@ -21,37 +21,36 @@ runs:
     - name: Validate branch existence
       if: inputs.branch == 'upstream/b-open'
       shell: bash
+      env: 
+        GITHUB_PAT: ${{ inputs.github-pat }}
       run: |
-        # 1. Debugging Info (Safe)
-        echo "Validating branch: '${{ inputs.branch }}'"
-        echo "Repo Input: '${{ inputs.chart-repo }}'"
-        echo "Token Length: ${#${{ inputs.github-pat }}} characters"
+        # Debugging Info (Safe)
+        echo "Validating the GitHub PAT"
+        if [ -z "$MY_TOKEN" ];then
+          echo "::error::GITHUB_PAT is not set. Blocking pipeline."
+          exit 1
+        fi
 
         # Check if the branch input is empty
+        echo "Checking if branch input is provided..."
         if [ -z "${{ inputs.branch }}" ]; then
           echo "::error::Branch input is empty. Blocking pipeline."
           exit 1
         fi
 
-        echo "Validating specific branch: ${{ inputs.branch }}"
-
-        CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
-        URL="https://${{ inputs.github-pat }}@github.com/${CLEAN_REPO}.git"
-        
         # Check if the branch exists on the remote
+        echo "Validating specific branch: ${{ inputs.branch }}"
+        CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
+        URL="https://${MY_TOKEN}@github.com/${CLEAN_REPO}.git"
         if CHECK=$(git ls-remote --heads "$URL" "${{ inputs.branch }}" 2>&1); then
-          echo "✅ Branch found!"
+          echo "Branch found!"
           echo "$CHECK"
         else
           echo "::error::Git check failed!"
           echo "Error Detail: $CHECK"
           exit 1
         fi
-        
-        if [ -z "$CHECK" ]; then
-          echo "::error::Branch '${{ inputs.branch }}' does not exist in ${{ inputs.chart-repo }}!"
-          exit 1
-        fi
+
         echo "Branch '${{ inputs.branch }}' verified."
 
     - name: Checkout chart repo
