@@ -41,7 +41,7 @@ runs:
         # Check if the branch exists on the remote
         echo "Validating specific branch: ${{ inputs.branch }}"
         CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
-        URL="https://${MY_TOKEN}@github.com/${CLEAN_REPO}.git"
+        URL="https://${GITHUB_PAT}@github.com/${CLEAN_REPO}.git"
         if CHECK=$(git ls-remote --heads "$URL" "${{ inputs.branch }}" 2>&1); then
           echo "Branch found!"
           echo "$CHECK"
