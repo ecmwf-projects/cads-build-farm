@@ -22,16 +22,21 @@ runs:
       if: inputs.branch == 'upstream/b-open'
       shell: bash
       run: |
-        echo "Validating specific branch: ${{ inputs.branch }}"
-        
         # Check if the branch input is empty
         if [ -z "${{ inputs.branch }}" ]; then
           echo "::error::Branch input is empty. Blocking pipeline."
           exit 1
         fi
 
+        echo "Validating specific branch: ${{ inputs.branch }}"
+
+        CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
+        URL="https://x-access-token:${{ inputs.github-pat }}@github.com/${CLEAN_REPO}.git"
+
+        echo "Repo URL: "$URL
+        
         # Check if the branch exists on the remote
-        CHECK=$(git ls-remote --heads https://x-access-token:${{ inputs.github-pat }}@github.com/${{ inputs.chart-repo }}.git ${{ inputs.branch }})
+        CHECK=$(git ls-remote --heads $URL ${{ inputs.branch }})
         
         if [ -z "$CHECK" ]; then
           echo "::error::Branch '${{ inputs.branch }}' does not exist in ${{ inputs.chart-repo }}!"
