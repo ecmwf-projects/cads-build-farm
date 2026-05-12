@@ -93,7 +93,7 @@ jobs:
 
       - name: Update HelmChart
         if: github.event_name != 'pull_request'
-        uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@main
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-chart@upstream-branch-support
         with:
           chart-repo: ${{ inputs.chart-repo }}
           branch: ${{ github.ref_name }}
@@ -102,7 +102,7 @@ jobs:
 
       - name: Update Related Python Packages
         if: ${{ steps.version.outputs.enviromentMode == 'stable' }}
-        uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@main
+        uses: ecmwf-projects/cads-build-farm/.github/actions/update-package@upstream-branch-support
         with:
           repositories: ${{ inputs.repositories }}
           github-pat: ${{ secrets.DSS_GITHUB_PAT }}
