@@ -26,7 +26,7 @@ runs:
       run: |
         # Debugging Info (Safe)
         echo "Validating the GitHub PAT"
-        if [ -z "$MY_TOKEN" ];then
+        if [ -z "$GITHUB_PAT" ];then
           echo "::error::GITHUB_PAT is not set. Blocking pipeline."
           exit 1
         fi
