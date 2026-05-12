@@ -38,10 +38,27 @@ runs:
           exit 1
         fi
 
-        # Check if the branch exists on the remote
         echo "Validating specific branch: ${{ inputs.branch }}"
-        CLEAN_REPO=$(echo "${{ inputs.chart-repo }}" | sed 's:/*$::')
-        URL="https://${GITHUB_PAT}@github.com/${CLEAN_REPO}.git"
+
+        # Normalize repo input to owner/repo (strip protocol, host, trailing slashes and .git)
+        REPO_INPUT='${{ inputs.chart-repo }}'
+        CLEAN_REPO=$(echo "$REPO_INPUT" | sed -E 's#^https?://(www\.)?github.com/##; s#/*$##; s/\.git$//')
+        echo "Checking repo: $CLEAN_REPO (host: github.com)"
+
+        # Use GitHub API to check repository existence and token access for clearer diagnostics
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_PAT" "https://api.github.com/repos/${CLEAN_REPO}")
+        if [ "$HTTP_CODE" -eq 200 ]; then
+          echo "Repository ${CLEAN_REPO} exists and token can access repository metadata (HTTP $HTTP_CODE)."
+        elif [ "$HTTP_CODE" -eq 404 ]; then
+          echo "::error::Repository '${CLEAN_REPO}' not found or token lacks permission (HTTP $HTTP_CODE)."
+          exit 1
+        else
+          echo "::warning::GitHub API returned HTTP $HTTP_CODE while checking repository. Proceeding to git check for additional detail."
+        fi
+
+        # Use x-access-token as username to avoid special-char issues in the URL
+        URL="https://x-access-token:${GITHUB_PAT}@github.com/${CLEAN_REPO}.git"
+        echo "Running git ls-remote --heads against github.com/${CLEAN_REPO} (token masked)."
         if CHECK=$(git ls-remote --heads "$URL" "${{ inputs.branch }}" 2>&1); then
           echo "Branch found!"
           echo "$CHECK"
