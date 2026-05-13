@@ -57,9 +57,8 @@ runs:
         fi
 
         # Use x-access-token as username to avoid special-char issues in the URL
-        URL="https://x-access-token:${GITHUB_PAT}@github.com/${CLEAN_REPO}.git"
-        echo "Running git ls-remote --heads against github.com/${CLEAN_REPO} (token masked)."
-        if CHECK=$(git ls-remote --heads "$URL" "${{ inputs.branch }}" 2>&1); then
+        CHECK=$(curl -s -H "Authorization: token $GITHUB_PAT" "https://api.github.com/repos/${CLEAN_REPO}/branches" | jq -r 'any(.[]; .name == "'${{ inputs.branch }}'")')
+        if [ "$CHECK" = "true" ]; then
           echo "Branch found!"
           echo "$CHECK"
         else
