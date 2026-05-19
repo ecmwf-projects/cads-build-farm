@@ -19,7 +19,7 @@ runs:
   using: "composite"
   steps:
     - name: Validate branch existence
-      if: inputs.branch == 'upstream/b-open'
+      if: ${{ inputs.branch != 'main' }}
       shell: bash
       env: 
         GITHUB_PAT: ${{ inputs.github-pat }}
@@ -38,12 +38,12 @@ runs:
           exit 1
         fi
 
-        echo "Validating specific branch: ${{ inputs.branch }}"
+        echo "Validating branch: ${{ inputs.branch }}"
 
         # Normalize repo input to owner/repo (strip protocol, host, trailing slashes and .git)
         REPO_INPUT='${{ inputs.chart-repo }}'
         CLEAN_REPO=$(echo "$REPO_INPUT" | sed -E 's#^https?://(www\.)?github.com/##; s#/*$##; s/\.git$//')
-        echo "Checking repo: $CLEAN_REPO (host: github.com)"
+        echo "Validate access to: $CLEAN_REPO (host: github.com)"
 
         # Use GitHub API to check repository existence and token access for clearer diagnostics
         HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_PAT" "https://api.github.com/repos/${CLEAN_REPO}")
@@ -96,7 +96,7 @@ runs:
     - name: Push changes
       shell: bash
       run: |
-        git push origin ${{ inputs.branch }} --force
+        git push origin ${{ inputs.branch }}
 
     # - name: Push changes
     #   shell: bash
