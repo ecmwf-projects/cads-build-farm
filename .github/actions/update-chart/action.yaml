@@ -5,6 +5,9 @@ inputs:
   chart-repo:
     description: "Repo containing the Helm chart"
     required: true
+  branch:
+    description: "Branch to update"
+    required: true
   app-version:
     description: "New appVersion to set"
     required: true
@@ -15,25 +18,63 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Validate branch existence
+      if: ${{ inputs.branch != 'main' }}
+      shell: bash
+      env: 
+        GITHUB_PAT: ${{ inputs.github-pat }}
+      run: |
+        # Debugging Info (Safe)
+        echo "Validating the GitHub PAT"
+        if [ -z "$GITHUB_PAT" ];then
+          echo "::error::GITHUB_PAT is not set. Blocking pipeline."
+          exit 1
+        fi
+
+        # Check if the branch input is empty
+        echo "Checking if branch input is provided..."
+        if [ -z "${{ inputs.branch }}" ]; then
+          echo "::error::Branch input is empty. Blocking pipeline."
+          exit 1
+        fi
+
+        echo "Validating branch: ${{ inputs.branch }}"
+
+        # Normalize repo input to owner/repo (strip protocol, host, trailing slashes and .git)
+        REPO_INPUT='${{ inputs.chart-repo }}'
+        CLEAN_REPO=$(echo "$REPO_INPUT" | sed -E 's#^https?://(www\.)?github.com/##; s#/*$##; s/\.git$//')
+        echo "Validate access to: $CLEAN_REPO (host: github.com)"
+
+        # Use GitHub API to check repository existence and token access for clearer diagnostics
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token $GITHUB_PAT" "https://api.github.com/repos/${CLEAN_REPO}")
+        if [ "$HTTP_CODE" -eq 200 ]; then
+          echo "Repository ${CLEAN_REPO} exists and token can access repository metadata (HTTP $HTTP_CODE)."
+        elif [ "$HTTP_CODE" -eq 404 ]; then
+          echo "::error::Repository '${CLEAN_REPO}' not found or token lacks permission (HTTP $HTTP_CODE)."
+          exit 1
+        else
+          echo "::warning::GitHub API returned HTTP $HTTP_CODE while checking repository. Proceeding to git check for additional detail."
+        fi
+
+        # Use x-access-token as username to avoid special-char issues in the URL
+        CHECK=$(curl -s -H "Authorization: token $GITHUB_PAT" "https://api.github.com/repos/${CLEAN_REPO}/branches" | jq -r 'any(.[]; .name == "'${{ inputs.branch }}'")')
+        if [ "$CHECK" = "true" ]; then
+          echo "Branch found!"
+          echo "$CHECK"
+        else
+          echo "::error::Git check failed!"
+          echo "Error Detail: $CHECK"
+          exit 1
+        fi
+
+        echo "Branch '${{ inputs.branch }}' verified."
+
     - name: Checkout chart repo
       uses: actions/checkout@v4
       with:
         repository: ${{ inputs.chart-repo }}
         token: ${{ inputs.github-pat }}
-        ref: main
-
-    # - name: Check for existing branch
-    #   id: check_branch
-    #   shell: bash
-    #   run: |
-    #     git fetch origin
-    #     if git show-ref --verify --quiet refs/heads/automatic_update; then
-    #       echo "Branch exists"
-    #       git checkout automatic_update
-    #     else
-    #       echo "Branch does not exist"
-    #       git checkout -b automatic_update
-    #     fi
+        ref: ${{ inputs.branch }}
 
     - name: Update appVersion
       shell: bash
@@ -55,7 +96,7 @@ runs:
     - name: Push changes
       shell: bash
       run: |
-        git push origin main --force
+        git push origin ${{ inputs.branch }}
 
     # - name: Push changes
     #   shell: bash
