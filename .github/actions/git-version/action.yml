@@ -40,7 +40,6 @@ runs:
         branches:
           main:
             mode: ContinuousDelivery
-            label: alpha
             increment: Minor
             prevent-increment:
               of-merged-branch: false
@@ -52,6 +51,27 @@ runs:
             tracks-release-branches: true
             is-release-branch: false
             is-main-branch: true
+            pre-release-weight: 0
+          upstream/b-open:
+            mode: ContinuousDelivery
+            label: alpha
+            increment: Minor
+            is-release-branch: false
+            regex: '^upstream/b-open$'
+          develop:
+            mode: ContinuousDelivery
+            label: '{BranchName}'
+            increment: Patch
+            regex: '^feature/(?<BranchName>.*)|^hotfix/(?<BranchName>.*)|^*(?<BranchName>.*)'
+            prevent-increment:
+              of-merged-branch: false
+            track-merge-target: true
+            track-merge-message: true
+            source-branches: []
+            is-source-branch-for: []
+            tracks-release-branches: true
+            is-release-branch: false
+            is-main-branch: false
             pre-release-weight: 0
         EOF
 

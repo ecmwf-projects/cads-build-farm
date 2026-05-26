@@ -58,7 +58,7 @@ jobs:
         run: cp cads-build-farm/scripts/* ./
 
       - name: compute semantic version
-        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@main
+        uses: ecmwf-projects/cads-build-farm/.github/actions/git-version@upstream-branch-support
         id: version
 
 
